@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<!-- <html lang="en" dir="ltr" id="root-html">
+    <html lang="en" dir="ltr" id="root-html" class="transition-colors duration-300"></html> -->
+<html lang="en" 
+      x-data="setup()" 
+      :class="{ 'dark': darkMode }" 
+      :dir="isRtl ? 'rtl' : 'ltr'">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" href="assets/moon.png">
+    <title>Stellaris | Dark Sky Preserve</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+   <script>
+  tailwind.config = {
+    darkMode: 'class',
+  }
+</script>
+   <style>
+        
+        /* Smooth transitions for theme switching */
+        body { transition: background-color 0.3s, color 0.3s; }
+        .star-bg { background: radial-gradient(circle at center, #111827 0%, #000000 100%); }
+        /* Simple star animation */
+        @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .star { animation: twinkle 3s infinite ease-in-out; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300">
+<nav class="fixed w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-20 items-center">
+            <a href="index.html">
+                 <div class="flex-shrink-0 flex items-center gap-2">
+                <i class="fa-solid fa-moon text-indigo-500 text-2xl"></i>
+                <span class="text-xl font-bold tracking-tighter">STELLARIS</span>
+            </div>
+            </a>
+           
+
+            <div id="nav-links-container" class="hidden lg:flex space-x-8 items-center font-medium h-full">
+                <a href="index.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Home</a>
+                <a href="home2.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Home 2</a>
+                <a href="service.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Services</a>
+                <a href="gallery.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Gallery</a>
+                <a href="pricing.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Pricing</a>
+                <a href="user.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">User</a>
+                <a href="contact.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Contact</a>
+                
+                <div class="flex items-center gap-4 border-l pl-6 border-gray-300 dark:border-gray-700">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:scale-110 transition"><i class="fa-solid fa-circle-half-stroke"></i></button>
+                    <button id="dir-toggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 text-xs font-bold uppercase hover:scale-110 transition">LTR</button>
+                   <a href="login.html">
+                                        <button class="bg-indigo-600 text-white px-5 py-2 rounded-full hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20">Login</button>
+
+                   </a>
+                </div>
+            </div>
+
+            <div class="lg:hidden flex items-center gap-4">
+                <button id="mobile-menu-btn" class="text-2xl hover:text-indigo-500 transition"><i class="fa-solid fa-bars-staggered"></i></button>
+            </div>
+        </div>
+    </div>
+   <div id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-8 space-y-4 shadow-xl">
+    <div class="flex flex-col space-y-4 font-medium dark:text-gray-200">
+        <a href="index.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Home</a>
+        <a href="home2.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Home 2</a>
+        <a href="service.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Services</a>
+        <a href="gallery.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Gallery</a>
+        <a href="pricing.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Pricing</a>
+        <a href="user.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">User</a>
+        <a href="contact.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Contact</a>
+    </div>
+
+    <hr class="border-gray-200 dark:border-gray-800">
+    
+    <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl mb-2">
+        <div class="flex gap-2">
+            <button id="theme-toggle-m" class="p-2 rounded-lg bg-white dark:bg-gray-700 dark:text-white shadow-sm transition hover:scale-105 active:scale-95">
+                <i class="fa-solid fa-circle-half-stroke"></i>
+            </button>
+            <button id="dir-toggle-m" class="p-2 rounded-lg bg-white dark:bg-gray-700 dark:text-white text-xs font-bold uppercase shadow-sm transition hover:scale-105 active:scale-95">
+                <i class="fa-solid fa-language"></i> LTR
+            </button>
+        </div>
+    </div>
+    
+    <a href="login.html" class="block">
+        <button class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-indigo-500/30">🔭 Book Now</button>
+    </a>
+</div>
+
+</nav>
+<style>
+    /* DESKTOP ACTIVE STATE (Blue Underline) */
+.nav-item.active {
+    color: #4f46e5 !important; /* Indigo-600 */
+    font-weight: 700;
+}
+
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%; /* Line is full width for active page */
+    height: 2px;
+    background: #4f46e5;
+    border-radius: 2px;
+}
+
+/* MOBILE ACTIVE STATE (Side Highlight) */
+.mobile-nav-item.active {
+    color: #4f46e5 !important;
+    background: rgba(79, 70, 229, 0.1);
+    border-left: 4px solid #4f46e5;
+    padding-left: 1.5rem !important;
+    font-weight: 700;
+}
+
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // 1. Get the current page filename (e.g., "service.html")
+    // If the path is empty or "/", default to "index.html"
+    const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+    // 2. Select all desktop and mobile links
+    const allLinks = document.querySelectorAll('.nav-item, .mobile-nav-item');
+
+    allLinks.forEach(link => {
+        const linkHref = link.getAttribute('href');
+
+        // 3. Check if the link's href matches the current page
+        if (linkHref === currentPage) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+});
+
+
+</script>
+<header class="relative py-24 md:py-36 bg-indigo-600 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+        <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1600" class="w-full h-full object-cover opacity-20" alt="Space">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-50 dark:from-slate-950 via-transparent to-transparent"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
+        <a href="index.html" class="inline-block mb-8 group">
+            <div class="w-20 h-20 bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2rem] flex items-center justify-center group-hover:bg-white group-hover:text-indigo-600 transition-all duration-500 shadow-2xl">
+                <i class="fa-solid fa-shuttle-space text-4xl"></i>
+            </div>
+        </a>
+        <h1 class="text-5xl md:text-8xl font-black tracking-tighter uppercase mb-4 dark:text-white">Contact Us</h1>
+        <p class="text-indigo-100 dark:text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-medium">
+            Reach out to our observatory team for bookings, technical support, or astronomical inquiries.
+        </p>
+    </div>
+</header>
+<section class="py-12 md:py-24 px-6 bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16">
+        
+        <div class="space-y-10">
+            <div class="space-y-4">
+                <h2 class="text-sm font-black uppercase tracking-[0.3em] text-indigo-600">Quick Connect</h2>
+                <h3 class="text-3xl font-bold dark:text-white">Our Coordinates</h3>
+            </div>
+
+            <div class="space-y-8">
+                <div class="flex gap-5 group cursor-default">
+                    <div class="w-14 h-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+                        <i class="fa-solid fa-location-crosshairs text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Station Location</p>
+                        <p class="font-bold dark:text-slate-200 leading-snug">Star Peak Highlands,<br>Atacama Desert, Chile</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 group cursor-default">
+                    <div class="w-14 h-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+                        <i class="fa-solid fa-satellite-dish text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Secure Line</p>
+                        <p class="font-bold dark:text-slate-200">+1 (800) STELLAR</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-8 md:p-14 rounded-[3rem] shadow-xl border border-slate-100 dark:border-slate-800">
+            <form id="contact-form" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400">Your Identity</label>
+                    <input type="text" placeholder="John Doe" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400">Communication Link</label>
+                    <input type="email" placeholder="john@nebula.com" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white">
+                </div>
+                <div class="md:col-span-2 space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400">Your Message</label>
+                    <textarea rows="6" placeholder="Transmission start..." class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white"></textarea>
+                </div>
+                <button class="md:col-span-2 py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-2xl shadow-indigo-600/30 transition-all active:scale-[0.98] uppercase tracking-[0.2em]">
+                    Transmit Data <i class="fa-solid fa-paper-plane ml-2"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+<section class="w-full h-[500px] relative">
+    <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3550.0!2d-68.1!3d-23.8!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDQ4JzAwLjAiUyA2OMKwMDYnMDAuMCJX!5e0!3m2!1sen!2scl!4v1620000000000!5m2!1sen!2scl" 
+        class="w-full h-full grayscale dark:invert dark:opacity-70 contrast-125 transition-all duration-1000 hover:grayscale-0 dark:hover:invert-0 dark:hover:opacity-100" 
+        style="border:0;" allowfullscreen="" loading="lazy">
+    </iframe>
+</section>
+
+
+
+
+
+
+
+
+
+
+  <footer class="bg-gray-100 dark:bg-gray-900 pt-16 pb-8 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 xl:gap-4 mb-12">
+            
+            <div class="flex flex-col items-start">
+                <a href="index.html" class="group">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-moon text-indigo-500 text-2xl transition-transform group-hover:rotate-12"></i>
+                        <span class="text-xl font-bold tracking-tighter dark:text-white">STELLARIS</span>
+                    </div>
+                </a>
+                <p class="mt-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed max-w-xs">
+                    Exploring the cosmos from Nebula Valley. Join us under the stars.
+                </p>
+                <div class="flex gap-4 mt-6">
+                    <a href="#" class="text-gray-500 hover:text-indigo-500 transition-colors text-xl"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-500 transition-colors text-xl"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-500 transition-colors text-xl"><i class="fa-brands fa-facebook"></i></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-6 text-gray-900 dark:text-white uppercase tracking-wider text-sm">Navigation</h4>
+                <ul class="space-y-3 text-gray-600 dark:text-gray-400">
+                    <li><a href="index.html" class="hover:text-indigo-500 transition-colors">Home</a></li>
+                    <li><a href="home2.html" class="hover:text-indigo-500 transition-colors">Home2</a></li>
+                    <li><a href="booknow.html" class="hover:text-indigo-500 transition-colors">Book Now</a></li>
+                    <li><a href="about.html" class="hover:text-indigo-500 transition-colors">About Us</a></li>
+                    <li><a href="gallery.html" class="hover:text-indigo-500 transition-colors">Gallery</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-6 text-gray-900 dark:text-white uppercase tracking-wider text-sm">Resources</h4>
+                <ul class="space-y-3 text-gray-600 dark:text-gray-400">
+                    <li><a href="service.html" class="hover:text-indigo-500 transition-colors">Services</a></li>
+                    <li><a href="pricing.html" class="hover:text-indigo-500 transition-colors">Pricing</a></li>
+                    <li><a href="contact.html" class="hover:text-indigo-500 transition-colors">Contact</a></li>
+                    <li><a href="404.html" class="hover:text-indigo-500 transition-colors">404 Page</a></li>
+                    <li><a href="comingsoon.html" class="hover:text-indigo-500 transition-colors">Coming Soon</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-6 text-gray-900 dark:text-white uppercase tracking-wider text-sm">Contact Us</h4>
+                <div class="space-y-4 text-gray-600 dark:text-gray-400">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-location-dot mt-1 text-indigo-500"></i>
+                        <span>123 Galaxy Way,<br>Nebula Valley, NV 89101</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-envelope text-indigo-500"></i>
+                        <a href="mailto:hello@stellaris.com" class="hover:text-indigo-500">hello@stellaris.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sm:col-span-2 lg:col-span-1">
+                <h4 class="font-bold mb-6 text-gray-900 dark:text-white uppercase tracking-wider text-sm">Newsletter</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Stay updated with our latest cosmic discoveries.</p>
+                <form class="flex flex-col gap-2">
+                    <input type="email" placeholder="Your email" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 p-2.5 rounded-lg w-full outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white transition-all">
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 rounded-lg text-white font-semibold transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
+                        Join the Journey
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center text-sm text-gray-500 border-t border-gray-200 dark:border-gray-800 pt-8">
+            <p>&copy; 2026 Stellaris Dark Sky Preserve. All rights reserved.</p>
+            <div class="flex justify-center gap-6 mt-4">
+                <a href="#" class="hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-gray-900 dark:hover:text-white transition-colors">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const root = document.documentElement;
+        const mobMenu = document.getElementById('mobile-menu');
+        const mobBtn = document.getElementById('mobile-menu-btn');
+
+        // --- 1. THEME LOGIC ---
+        const updateTheme = (isDark) => {
+            root.classList.toggle('dark', isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        };
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            updateTheme(true);
+        }
+
+        // Targets both desktop and mobile toggle IDs
+        document.querySelectorAll('#theme-toggle, #theme-toggle-desktop, #theme-toggle-m').forEach(btn => {
+            btn.onclick = () => updateTheme(!root.classList.contains('dark'));
+        });
+
+        // --- 2. DIRECTION LOGIC ---
+        const updateDirection = (dir) => {
+            root.dir = dir;
+            localStorage.setItem('dir', dir);
+            document.querySelectorAll('#dir-toggle, #dir-toggle-desktop, #dir-toggle-m').forEach(btn => {
+                btn.innerHTML = dir === 'rtl' ? '<i class="fa-solid fa-language"></i> RTL' : '<i class="fa-solid fa-language"></i> LTR';
+            });
+        };
+
+        if (localStorage.getItem('dir')) updateDirection(localStorage.getItem('dir'));
+
+        document.querySelectorAll('#dir-toggle, #dir-toggle-desktop, #dir-toggle-m').forEach(btn => {
+            btn.onclick = () => updateDirection(root.dir === 'rtl' ? 'ltr' : 'rtl');
+        });
+
+        // --- 3. MOBILE MENU FIX ---
+        if (mobBtn && mobMenu) {
+            mobBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = mobMenu.classList.toggle('hidden');
+                mobBtn.innerHTML = isHidden ? 
+                    '<i class="fa-solid fa-bars-staggered"></i>' : 
+                    '<i class="fa-solid fa-xmark"></i>';
+            });
+
+            // Close when clicking links
+            mobMenu.querySelectorAll('a').forEach(item => {
+                item.addEventListener('click', () => {
+                    mobMenu.classList.add('hidden');
+                    mobBtn.innerHTML = '<i class="fa-solid fa-bars-staggered"></i>';
+                });
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobMenu.contains(e.target) && !mobBtn.contains(e.target)) {
+                    mobMenu.classList.add('hidden');
+                    mobBtn.innerHTML = '<i class="fa-solid fa-bars-staggered"></i>';
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

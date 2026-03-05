@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" 
+      x-data="setup()" 
+      :class="{ 'dark': darkMode }" 
+      :dir="isRtl ? 'rtl' : 'ltr'">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" href="assets/moon.png">
+    <title>Stellaris | Visitor Dashboard</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Crucial: tells Tailwind to look for the .dark class
+        }
+    </script>
+
+    <script>
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        [x-cloak] { display: none !important; }
+        /* Forces smooth transitions on every element for a premium feel */
+        * { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen">
+
+    <header class="lg:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b dark:border-slate-800 sticky top-0 z-50">
+       <a href="index.html">
+        <div class="flex items-center gap-3">
+         <i class="fa-solid fa-moon text-indigo-500 text-2xl"></i>
+                    <span class="text-xl font-bold tracking-tighter">STELLARIS</span>
+        </div>
+    </a>
+        
+        <button @click="sidebarOpen = !sidebarOpen" class="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg">
+            <i class="fa-solid fa-bars-staggered text-2xl"></i>
+        </button>
+    </header>
+
+    <div class="flex min-h-screen relative">
+        <div x-show="sidebarOpen" 
+             x-cloak
+             @click="sidebarOpen = false" 
+             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 lg:hidden" 
+             x-transition.opacity></div>
+
+        <aside 
+            x-cloak
+            :class="sidebarOpen ? 'translate-x-0' : (isRtl ? (isRtl ? 'translate-x-full' : '-translate-x-full') : '-translate-x-full')"
+            class="fixed inset-y-0 z-50 w-72 bg-white dark:bg-slate-900 border-r dark:border-slate-800 lg:translate-x-0 lg:static lg:inset-0 flex flex-col shadow-2xl lg:shadow-none">
+            
+            <div class="h-full flex flex-col p-6">
+                <a href="index.html">
+                     <div class="hidden lg:flex items-center gap-3 mb-12 px-2">
+                     <i class="fa-solid fa-moon text-indigo-500 text-2xl"></i>
+                    <span class="text-xl font-bold tracking-tighter">STELLARIS</span>
+                </div>
+                </a>
+               
+
+                <nav class="flex-1 space-y-2">
+                    <template x-for="tab in tabs" :key="tab.id">
+                        <button 
+                            @click="activeTab = tab.id; if(window.innerWidth < 1024) sidebarOpen = false"
+                            :class="activeTab === tab.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'"
+                            class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest group">
+                            <i :class="tab.icon" class="w-5 text-lg group-hover:scale-110 transition-transform"></i>
+                            <span x-text="tab.name"></span>
+                        </button>
+                    </template>
+                </nav>
+
+                <div class="border-t dark:border-slate-800 pt-6 space-y-3">
+                    <button @click="toggleDarkMode()" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest hover:ring-2 ring-indigo-500 transition-all">
+                        <span x-text="darkMode ? 'Switch to Light' : 'Switch to Dark'"></span>
+                        <i :class="darkMode ? 'fa-sun text-amber-400' : 'fa-moon text-indigo-600'" class="fa-solid text-sm"></i>
+                    </button>
+
+                    <button @click="toggleRtl()" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest hover:ring-2 ring-indigo-500 transition-all">
+                        <span x-text="isRtl ? 'English (LTR)' : 'Arabic (RTL)'"></span>
+                        <i class="fa-solid fa-language text-sm"></i>
+                    </button>
+
+                    <button @click="logout()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 font-black text-[10px] uppercase tracking-widest transition-all">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span>Logout Session</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-4 md:p-8 lg:p-12 overflow-y-auto">
+            
+            <div x-show="activeTab === 'home'" x-transition:enter class="space-y-8">
+    
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <h2 class="text-xs font-black text-indigo-600 uppercase tracking-[0.4em] mb-2">Observation Stats</h2>
+            <h3 class="text-4xl md:text-5xl font-black uppercase tracking-tighter">Home<span class="text-indigo-600">Dashboard</span></h3>
+        </div>
+        
+        <div class="flex items-center gap-4 bg-emerald-500/10 border border-emerald-500/20 px-6 py-4 rounded-[2rem] group cursor-pointer hover:bg-emerald-500/20 transition-all">
+            <div class="relative">
+                <i class="fa-solid fa-telescope text-emerald-500 text-2xl group-hover:rotate-12 transition-transform"></i>
+                <div class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
+            </div>
+            <div>
+                <p class="text-[10px] font-black uppercase text-emerald-600">Sky Quality</p>
+                <p class="font-bold text-sm">Bortle Class 1 (Excellent)</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <template x-for="stat in stats" :key="stat.label">
+            <div class="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border dark:border-slate-800 group hover:border-indigo-500 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div class="flex justify-between items-start mb-6">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest" x-text="stat.label"></p>
+                    <div class="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
+                        <i :class="stat.icon" class="text-indigo-600 text-xs"></i>
+                    </div>
+                </div>
+                <p class="text-5xl font-black tracking-tighter" x-text="stat.value"></p>
+                <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 mt-6 rounded-full overflow-hidden">
+                    <div class="bg-indigo-600 h-full transition-all duration-1000" :style="`width: ${stat.percent}%`"></div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        
+        <div class="xl:col-span-2 bg-slate-900 rounded-[3rem] p-8 text-white relative overflow-hidden group min-h-[400px]">
+            <div class="relative z-10">
+                <h4 class="text-xl font-black uppercase italic tracking-tighter mb-1 text-indigo-400">Live View</h4>
+                <p class="text-3xl font-black uppercase tracking-tighter mb-6">Current Star Map</p>
+                
+                <div class="relative w-full h-64 border border-white/10 rounded-full flex items-center justify-center overflow-hidden bg-slate-950/50">
+                    <div class="absolute inset-0 opacity-30 animate-[spin_60s_linear_infinite]">
+                        <div class="absolute top-10 left-20 w-1 h-1 bg-white rounded-full shadow-[0_0_8px_white]"></div>
+                        <div class="absolute top-40 left-60 w-1.5 h-1.5 bg-indigo-400 rounded-full shadow-[0_0_10px_indigo]"></div>
+                        <div class="absolute top-20 right-20 w-1 h-1 bg-white rounded-full"></div>
+                    </div>
+                    <div class="z-10 text-center">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-300">Targeting</p>
+                        <p class="text-lg font-black uppercase">Andromeda Galaxy</p>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            <button class="absolute bottom-8 right-8 px-6 py-3 bg-indigo-600 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-white hover:text-indigo-600 transition-all">
+                Full Screen Map
+            </button>
+        </div>
+
+        <div class="space-y-6">
+            <div class="p-8 bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-[2.5rem]">
+                <h4 class="font-black uppercase tracking-tighter text-xl mb-4">Quick Register</h4>
+                <form @submit.prevent="alert('Slot Requested!')" class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Telescope Unit</label>
+                        <select class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 ring-indigo-500 outline-none">
+                            <option>14" Celestron EdgeHD</option>
+                            <option>Solar Scope S1</option>
+                            <option>Deep Sky Rig B</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Time Slot</label>
+                        <input type="time" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 ring-indigo-500 outline-none">
+                    </div>
+                    <button class="w-full py-4 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-600/20 hover:scale-[1.02] active:scale-95 transition-all">
+                        Request Slot
+                    </button>
+                </form>
+            </div>
+
+            <div class="p-8 bg-amber-500/10 border border-amber-500/20 rounded-[2.5rem]">
+                <div class="flex items-center gap-3 mb-4 text-amber-600 dark:text-amber-500">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <h4 class="font-black uppercase tracking-tighter">Sky Alerts</h4>
+                </div>
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-3 text-xs font-bold opacity-80">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        High Altitude Haze at 11:00 PM
+                    </li>
+                    <li class="flex items-center gap-3 text-xs font-bold opacity-80">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        ISS Flyover: 02:14 AM
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+            <div x-show="activeTab === 'bookings'" x-transition:enter x-cloak>
+                <h3 class="text-3xl font-black uppercase tracking-tighter mb-8">Celestial <span class="text-indigo-600">Lodging</span></h3>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <div class="group bg-white dark:bg-slate-900 rounded-[3rem] overflow-hidden border dark:border-slate-800 hover:border-indigo-500 transition-all">
+                        <div class="h-72 overflow-hidden relative">
+                            <img src="assets/campaign" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-10">
+                            <h4 class="text-2xl font-black uppercase mb-4">The Kepler Pod</h4>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed">Luxury observation dome with 360-degree night sky views and professional telescope integration.</p>
+                            <a href="booknow.html">
+                                <button class="w-full py-5 bg-slate-900 dark:bg-indigo-600 text-white font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-indigo-500 transition-all">
+                                Book This Pod
+                            </button>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 p-8 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[3rem] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
+                <div class="flex items-center gap-8">
+                    <i class="fa-solid fa-umbrella text-4xl animate-bounce"></i>
+                    <div>
+                        <h5 class="text-2xl font-black uppercase tracking-tighter italic">Clear Skies Guarantee</h5>
+                        <p class="text-indigo-100/80">If cloud cover exceeds 40%, we provide instant credit for future stays.</p>
+                    </div>
+                </div>
+                <button class="px-10 py-4 bg-white text-indigo-600 font-black uppercase text-xs tracking-widest rounded-2xl hover:scale-105 transition-transform">
+                    Learn More
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function setup() {
+            return {
+                activeTab: 'home',
+                sidebarOpen: false,
+                // Load from localStorage or default to false
+                darkMode: localStorage.getItem('darkMode') === 'true',
+                isRtl: localStorage.getItem('isRtl') === 'true',
+                
+                tabs: [
+                    { id: 'home', name: 'Commander Home', icon: 'fa-solid fa-gauge-high' },
+                    { id: 'bookings', name: 'Reserve Pod', icon: 'fa-solid fa-house-night' },
+                    { id: 'telescope', name: 'Scope Access', icon: 'fa-solid fa-telescope' },
+                    { id: 'alerts', name: 'Cloud Alerts', icon: 'fa-solid fa-satellite' }
+                ],
+                
+                stats: [
+                    { label: 'Cloud Density', value: '12%', percent: 12, icon: 'fa-solid fa-cloud' },
+                    { label: 'Air Transparency', value: '94%', percent: 94, icon: 'fa-solid fa-wind' },
+                    { label: 'Lunar Phase', value: 'Waning', percent: 15, icon: 'fa-solid fa-moon' }
+                ],
+
+                toggleDarkMode() {
+                    this.darkMode = !this.darkMode;
+                    localStorage.setItem('darkMode', this.darkMode);
+                    // This manually syncs the class just in case Alpine hasn't finished rendering
+                    if (this.darkMode) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                },
+
+                toggleRtl() {
+                    this.isRtl = !this.isRtl;
+                    localStorage.setItem('isRtl', this.isRtl);
+                },
+
+                logout() {
+                    if(confirm('Ready to sign out of Stellaris Command?')) {
+                        alert('Cleaning session...');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<!-- <html lang="en" dir="ltr" id="root-html">
+    <html lang="en" dir="ltr" id="root-html" class="transition-colors duration-300"></html> -->
+<html lang="en" 
+      x-data="setup()" 
+      :class="{ 'dark': darkMode }" 
+      :dir="isRtl ? 'rtl' : 'ltr'">
+    <head>
+
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" href="assets/moon.png">
+    <title>Stellaris | Dark Sky Preserve</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+   <script>
+  tailwind.config = {
+    darkMode: 'class',
+  }
+</script>
+   <style>
+        
+        /* Smooth transitions for theme switching */
+        body { transition: background-color 0.3s, color 0.3s; }
+        .star-bg { background: radial-gradient(circle at center, #111827 0%, #000000 100%); }
+        /* Simple star animation */
+        @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .star { animation: twinkle 3s infinite ease-in-out; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300">
+<nav class="fixed w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-20 items-center">
+            <a href="index.html">
+                 <div class="flex-shrink-0 flex items-center gap-2">
+                <i class="fa-solid fa-moon text-indigo-500 text-2xl"></i>
+                <span class="text-xl font-bold tracking-tighter">STELLARIS</span>
+            </div>
+            </a>
+           
+
+            <div id="nav-links-container" class="hidden lg:flex space-x-8 items-center font-medium h-full">
+                <a href="index.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Home</a>
+                <a href="home2.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Home 2</a>
+                <a href="service.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Services</a>
+                <a href="gallery.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Gallery</a>
+                <a href="pricing.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Pricing</a>
+                <a href="user.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">User</a>
+                <a href="contact.html" class="nav-item relative hover:text-indigo-500 transition py-1 h-fit">Contact</a>
+                
+                <div class="flex items-center gap-4 border-l pl-6 border-gray-300 dark:border-gray-700">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:scale-110 transition"><i class="fa-solid fa-circle-half-stroke"></i></button>
+                    <button id="dir-toggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 text-xs font-bold uppercase hover:scale-110 transition">LTR</button>
+                   <a href="login.html">
+                                        <button class="bg-indigo-600 text-white px-5 py-2 rounded-full hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20">Login</button>
+
+                   </a>
+                </div>
+            </div>
+
+            <div class="lg:hidden flex items-center gap-4">
+                <button id="mobile-menu-btn" class="text-2xl hover:text-indigo-500 transition"><i class="fa-solid fa-bars-staggered"></i></button>
+            </div>
+        </div>
+    </div>
+   <div id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-8 space-y-4 shadow-xl">
+    <div class="flex flex-col space-y-4 font-medium dark:text-gray-200">
+        <a href="index.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Home</a>
+        <a href="home2.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Home 2</a>
+        <a href="service.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Services</a>
+        <a href="gallery.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Gallery</a>
+        <a href="pricing.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Pricing</a>
+        <a href="user.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">User</a>
+        <a href="contact.html" class="mobile-nav-item block text-lg px-4 py-2 rounded-lg transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Contact</a>
+    </div>
+
+    <hr class="border-gray-200 dark:border-gray-800">
+    
+    <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl mb-2">
+        <div class="flex gap-2">
+            <button id="theme-toggle-m" class="p-2 rounded-lg bg-white dark:bg-gray-700 dark:text-white shadow-sm transition hover:scale-105 active:scale-95">
+                <i class="fa-solid fa-circle-half-stroke"></i>
+            </button>
+            <button id="dir-toggle-m" class="p-2 rounded-lg bg-white dark:bg-gray-700 dark:text-white text-xs font-bold uppercase shadow-sm transition hover:scale-105 active:scale-95">
+                <i class="fa-solid fa-language"></i> LTR
+            </button>
+        </div>
+    </div>
+    
+    <a href="login.html" class="block">
+        <button class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-indigo-500/30">🔭 Book Now</button>
+    </a>
+</div>
+
+</nav>
+<style>
+    /* DESKTOP ACTIVE STATE (Blue Underline) */
+.nav-item.active {
+    color: #4f46e5 !important; /* Indigo-600 */
+    font-weight: 700;
+}
+
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%; /* Line is full width for active page */
+    height: 2px;
+    background: #4f46e5;
+    border-radius: 2px;
+}
+
+/* MOBILE ACTIVE STATE (Side Highlight) */
+.mobile-nav-item.active {
+    color: #4f46e5 !important;
+    background: rgba(79, 70, 229, 0.1);
+    border-left: 4px solid #4f46e5;
+    padding-left: 1.5rem !important;
+    font-weight: 700;
+}
+
+</style>
+<script>
+    
+    document.addEventListener('DOMContentLoaded', () => {
+    // 1. Get the current page filename (e.g., "service.html")
+    // If the path is empty or "/", default to "index.html"
+    const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+    // 2. Select all desktop and mobile links
+    const allLinks = document.querySelectorAll('.nav-item, .mobile-nav-item');
+
+    allLinks.forEach(link => {
+        const linkHref = link.getAttribute('href');
+
+        // 3. Check if the link's href matches the current page
+        if (linkHref === currentPage) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+});
+
+
+</script>
+
+
+
+    <section class="relative h-screen flex items-center justify-center overflow-hidden bg-black">
+        <div class="absolute inset-0 z-0">
+            <img src="assets/index hero" class="w-full h-full object-cover opacity-60" alt="Milky Way">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black"></div>
+        </div>
+
+        <div class="relative z-10 text-center px-4 max-w-4xl">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
+                Escape the City Lights. <br><span class="text-indigo-400">Embrace the Stars.</span>
+            </h1>
+            <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+                Experience the night like never before at our premier Dark Sky Preserve. Where the universe truly comes alive.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="booknow.html">
+                    <button class="px-8 py-4 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105">
+                    🔭 Book a Stargazing Session
+                </button>
+                </a>
+                
+                <a href="service.html">
+                     <button class="px-8 py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-lg font-bold hover:bg-white/20 transition">
+                    📅 View Upcoming Events
+                </button>
+                </a>
+               
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 bg-white dark:bg-gray-950 transition-colors duration-300" id="about">
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="flex flex-col lg:flex-row items-center gap-12 mb-16">
+            <div class="lg:w-1/2 space-y-6">
+                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">
+                    About the <span class="text-indigo-600 dark:text-indigo-400">Preserve</span>
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
+                    “Located far from urban light pollution, our Dark Sky Preserve offers pristine night skies, guided telescope sessions, and immersive astronomy experiences for all ages.”
+                </p>
+                <div class="pt-4">
+                    <button class="px-6 py-2 border-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 font-bold rounded-full hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-400 dark:hover:text-gray-950 transition-all">
+                        Learn More <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="hidden lg:block lg:w-1/2 relative">
+                <div class="absolute -inset-4 bg-indigo-500/20 blur-3xl rounded-full"></div>
+                <img src="assets/Observatory Dome" 
+                     alt="Observatory Dome" 
+                     class="relative rounded-2xl shadow-2xl border border-white/10 grayscale hover:grayscale-0 transition duration-700">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="group p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-500 transition-all duration-300 hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-indigo-500/10">
+                <div class="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-certificate text-indigo-600 dark:text-indigo-400 text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Certified Dark Sky</h3>
+                <p class="text-gray-600 dark:text-gray-400">Recognized globally for maintaining pristine, natural darkness and celestial visibility.</p>
+            </div>
+
+            <div class="group p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-500 transition-all duration-300 hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-indigo-500/10">
+                <div class="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-low-vision text-indigo-600 dark:text-indigo-400 text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Minimal Pollution</h3>
+                <p class="text-gray-600 dark:text-gray-400">Strict lighting ordinances ensure 99% reduction in artificial skyglow compared to urban areas.</p>
+            </div>
+
+            <div class="group p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-500 transition-all duration-300 hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-indigo-500/10 md:col-span-2 lg:col-span-1">
+                <div class="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-leaf text-indigo-600 dark:text-indigo-400 text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Eco-Friendly</h3>
+                <p class="text-gray-600 dark:text-gray-400">Our facilities run on 100% renewable energy to preserve the earth while we watch the stars.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+<style>
+    /* Smooth Mirroring for RTL */
+    [dir="rtl"] .fa-arrow-right {
+        transform: rotate(180deg);
+    }
+    body {
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+</style>
+<section class="py-24 px-6 bg-slate-50 dark:bg-black transition-colors duration-500 overflow-hidden" id="services">
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-6xl font-black mb-4 tracking-tighter">
+                Explore the <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-400">Cosmos</span>
+            </h2>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg font-light">
+                Our world-class facilities and expert astronomers bring the mysteries of the universe right to your lens.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <div class="group relative p-8 rounded-3xl bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-white/10 backdrop-blur-xl hover:bg-indigo-600 dark:hover:bg-indigo-600 transition-all duration-500 cursor-pointer overflow-hidden shadow-xl">
+                <div class="relative z-10">
+                  <div class="w-16 h-16 bg-indigo-100 dark:bg-indigo-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-indigo-600 transition-all duration-300 group-hover:scale-110 shadow-sm">
+    <i class="fa-solid fa-binoculars text-indigo-600 dark:text-indigo-400 text-2xl group-hover:text-white transition-colors"></i>
+</div>
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-white transition-colors">Advanced Telescope Viewing</h3>
+                    <p class="text-gray-600 dark:text-gray-400 group-hover:text-indigo-100 transition-colors">Peer through our 20-inch aperture telescopes at distant nebulae and galaxies.</p>
+                </div>
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
+            </div>
+
+            <div class="group relative p-8 rounded-3xl bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-white/10 backdrop-blur-xl hover:bg-purple-600 dark:hover:bg-purple-600 transition-all duration-500 cursor-pointer overflow-hidden shadow-xl">
+                <div class="relative z-10">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-white/20 transition-colors">
+                        <i class="fa-solid fa-user-astronaut text-purple-600 dark:text-purple-400 text-2xl group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-white transition-colors">Guided Astronomy Talks</h3>
+                    <p class="text-gray-600 dark:text-gray-400 group-hover:text-purple-100 transition-colors">Learn from PhD astrophysicists about the origin of stars and black holes.</p>
+                </div>
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
+            </div>
+
+            <div class="group relative p-8 rounded-3xl bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-white/10 backdrop-blur-xl hover:bg-blue-600 dark:hover:bg-blue-600 transition-all duration-500 cursor-pointer overflow-hidden shadow-xl">
+                <div class="relative z-10">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-white/20 transition-colors">
+                        <i class="fa-solid fa-camera-retro text-blue-600 dark:text-blue-400 text-2xl group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-white transition-colors">Astrophotography Sessions</h3>
+                    <p class="text-gray-600 dark:text-gray-400 group-hover:text-blue-100 transition-colors">Master the art of long-exposure photography and capture the Milky Way.</p>
+                </div>
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
+            </div>
+
+            <div class="group relative p-8 rounded-3xl bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-white/10 backdrop-blur-xl hover:bg-emerald-600 dark:hover:bg-emerald-600 transition-all duration-500 cursor-pointer overflow-hidden shadow-xl">
+                <div class="relative z-10">
+                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-white/20 transition-colors">
+                        <i class="fa-solid fa-star text-emerald-600 dark:text-emerald-400 text-2xl group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-white transition-colors">Constellation Tours</h3>
+                    <p class="text-gray-600 dark:text-gray-400 group-hover:text-emerald-100 transition-colors">Laser-guided tours of the ancient myths written across the night sky.</p>
+                </div>
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="py-24 px-6 bg-white dark:bg-gray-950 transition-colors duration-500" id="events">
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-2">Night <span class="text-indigo-600">Programs</span></h2>
+                <p class="text-gray-500 dark:text-gray-400">Join our guided sessions and witness celestial phenomena.</p>
+            </div>
+            <button class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20">
+                View Full Calendar
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="group relative overflow-hidden rounded-3xl bg-gray-100 dark:bg-gray-900 border border-transparent hover:border-indigo-500 transition-all duration-500">
+                    <div class="h-48 overflow-hidden">
+                        <img src="assets/Meteor Shower" alt="Meteor Shower" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold uppercase tracking-widest text-indigo-500">Aug 12-13</span>
+                        <h3 class="text-xl font-bold mt-2">Meteor Shower Nights</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Experience the Perseids with high-altitude clarity.</p>
+                        <a href="booknow.html">
+                             <button class="mt-4 text-indigo-600 dark:text-indigo-400 font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+                            Reserve Your Spot <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        </a>
+                       
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-3xl bg-gray-100 dark:bg-gray-900 border border-transparent hover:border-indigo-500 transition-all duration-500">
+                    <div class="h-48 overflow-hidden">
+                        <img src="assets/Full Moon" alt="Full Moon" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold uppercase tracking-widest text-indigo-500">Sept 28</span>
+                        <h3 class="text-xl font-bold mt-2">Full Moon Viewing</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Detailed lunar photography and crater tours.</p>
+                        <a href="booknow.html">
+                              <button class="mt-4 text-indigo-600 dark:text-indigo-400 font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+                            Reserve Your Spot <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        </a>
+                      
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-3xl bg-gray-100 dark:bg-gray-900 border border-transparent hover:border-indigo-500 transition-all duration-500">
+                    <div class="h-48 overflow-hidden">
+                        <img src="assets/Planets" alt="Planets" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold uppercase tracking-widest text-indigo-500">Oct 05</span>
+                        <h3 class="text-xl font-bold mt-2">Planetary Alignments</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">See Saturn’s rings and Jupiter’s moons in one night.</p>
+                       <a href="booknow.html">
+                        <button class="mt-4 text-indigo-600 dark:text-indigo-400 font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+                            Reserve Your Spot <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                       </a>
+                        
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-3xl bg-gray-100 dark:bg-gray-900 border border-transparent hover:border-indigo-500 transition-all duration-500">
+                    <div class="h-48 overflow-hidden">
+                        <img src="assets/Workshops" alt="Workshops" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold uppercase tracking-widest text-indigo-500">Weekly</span>
+                        <h3 class="text-xl font-bold mt-2">Astronomy Workshops</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Master telescope setup and star-chart reading.</p>
+                        <a href="booknow.html">
+                             <button class="mt-4 text-indigo-600 dark:text-indigo-400 font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+                            Reserve Your Spot <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        </a>
+
+                       
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4">
+                <div class="sticky top-24 p-8 rounded-3xl bg-indigo-50 dark:bg-gray-900 border border-indigo-100 dark:border-gray-800">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                        <i class="fa-regular fa-calendar-check text-indigo-600"></i> Sky Calendar
+                    </h3>
+                    
+                    <div class="grid grid-cols-7 gap-2 text-center text-xs font-bold mb-4 opacity-60">
+                        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                    </div>
+                    <div class="grid grid-cols-7 gap-2 text-center mb-6">
+                        <div class="p-2 rounded-lg hover:bg-white dark:hover:bg-gray-800 cursor-pointer transition">1</div>
+                        <div class="p-2 rounded-lg hover:bg-white dark:hover:bg-gray-800 cursor-pointer transition">2</div>
+                        <div class="p-2 rounded-lg bg-indigo-600 text-white font-bold ring-4 ring-indigo-500/20">3</div>
+                        <div class="p-2 rounded-lg hover:bg-white dark:hover:bg-gray-800 cursor-pointer transition">4</div>
+                        <div class="p-2 rounded-lg hover:bg-white dark:hover:bg-gray-800 cursor-pointer transition">5</div>
+                        <div class="p-2 rounded-lg hover:bg-white dark:hover:bg-gray-800 cursor-pointer transition font-bold text-indigo-600">6</div>
+                        <div class="p-2 rounded-lg hover:bg-white dark:hover:bg-gray-800 cursor-pointer transition">7</div>
+                        </div>
+
+                    <div class="space-y-4">
+                        <div class="p-4 bg-white dark:bg-gray-800 rounded-2xl flex items-center gap-4 border border-gray-100 dark:border-gray-700">
+                            <div class="w-2 h-10 bg-indigo-500 rounded-full"></div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400">TONIGHT</p>
+                                <p class="font-bold">Saturn Opposition</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<section class="py-24 px-6 bg-gray-50 dark:bg-black transition-colors duration-500" id="why-visit">
+    <div class="max-w-7xl mx-auto">
+        
+       <div class="mb-16 text-center lg:text-left">
+    
+    <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-4 dark:text-white">
+        Why <span class="text-indigo-600">Visit Us?</span>
+    </h2>
+
+    <div class="h-1.5 w-24 bg-indigo-600 rounded-full mx-auto lg:mx-0"></div>
+    
+</div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <div class="group relative h-[400px] rounded-3xl overflow-hidden cursor-pointer shadow-2xl">
+                <img src="assets/img1" 
+                     alt="Crystal Clear Skies" 
+                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 p-8 w-full transform transition-transform duration-500 group-hover:-translate-y-2">
+                  
+                    <h3 class="text-2xl font-bold text-white mb-2">Crystal Clear Skies</h3>
+                    <p class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        Zero light pollution zone offering Class 1 Bortle Scale visibility.
+                    </p>
+                </div>
+            </div>
+
+            <div class="group relative h-[400px] rounded-3xl overflow-hidden cursor-pointer shadow-2xl">
+                <img src="assets/t5" 
+                     alt="Expert Astronomers" 
+                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/90 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 p-8 w-full transform transition-transform duration-500 group-hover:-translate-y-2">
+                   
+                    <h3 class="text-2xl font-bold text-white mb-2">Expert Astronomers</h3>
+                    <p class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        Guided tours by PhD researchers and veteran cosmic photographers.
+                    </p>
+                </div>
+            </div>
+
+            <div class="group relative h-[400px] rounded-3xl overflow-hidden cursor-pointer shadow-2xl">
+                <img src="assets/img2" 
+                     alt="Natural Setting" 
+                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 p-8 w-full transform transition-transform duration-500 group-hover:-translate-y-2">
+                    <span class="text-3xl mb-4 block">🏕</span>
+                    <h3 class="text-2xl font-bold text-white mb-2">Peaceful Setting</h3>
+                    <p class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        Surrounded by 50,000 acres of protected national forest.
+                    </p>
+                </div>
+            </div>
+
+            <div class="group relative h-[400px] rounded-3xl overflow-hidden cursor-pointer shadow-2xl">
+                <img src="assets/img3" 
+                     alt="Astrophotography" 
+                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-purple-900/90 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 p-8 w-full transform transition-transform duration-500 group-hover:-translate-y-2">
+                    
+                    <h3 class="text-2xl font-bold text-white mb-2">Perfect for Photos</h3>
+                    <p class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        Equipped with tracking mounts and vibration-free observation decks.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<section class="py-24 px-6 bg-white dark:bg-gray-950 transition-colors duration-500" id="gallery">
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-16 gap-6">
+            <div>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-2">Moments Under the <span class="text-indigo-600">Stars</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-xl">A glimpse into the breathtaking celestial views and experiences awaiting you at Stellaris.</p>
+            </div>
+            <a href="gallery.html">
+                <button class="flex-shrink-0 bg-gray-900 dark:bg-white text-white dark:text-gray-950 px-8 py-3 rounded-full font-bold hover:bg-gray-700 dark:hover:bg-gray-200 transition-all flex items-center gap-2 group">
+                    View Full Gallery <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[200px]">
+            
+            <div class="md:row-span-2 group relative overflow-hidden rounded-3xl cursor-pointer shadow-lg">
+                <img src="assets/Milky Way" alt="Milky Way" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8 text-white">
+                    <span class="text-xs font-bold uppercase tracking-widest text-indigo-400">Category</span>
+                    <h3 class="text-xl font-bold mt-1">Milky Way Photos</h3>
+                </div>
+            </div>
+
+            <div class="md:row-span-1 group relative overflow-hidden rounded-3xl cursor-pointer shadow-lg">
+                <img src="assets/Telescope" alt="Telescope" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 text-white">
+                    <span class="text-xs font-bold uppercase tracking-widest text-indigo-400">Equipment</span>
+                    <h3 class="text-lg font-bold mt-1">Telescope Setups</h3>
+                </div>
+            </div>
+
+            <div class="md:row-span-2 group relative overflow-hidden rounded-3xl cursor-pointer shadow-lg">
+                <img src="assets/Visitors" alt="Visitors" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8 text-white">
+                    <span class="text-xs font-bold uppercase tracking-widest text-indigo-400">Community</span>
+                    <h3 class="text-xl font-bold mt-1">Visitor Experiences</h3>
+                </div>
+            </div>
+
+            <div class="md:row-span-1 group relative overflow-hidden rounded-3xl cursor-pointer shadow-lg border-4 border-dashed border-gray-200 dark:border-gray-800 hover:border-indigo-500 transition-colors">
+                <img src="assets/Time-lapse" alt="Time-lapse" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30 text-white text-3xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-play ml-1"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-4 left-4 text-white p-2 bg-black/50 rounded-lg">
+                    <h3 class="text-sm font-bold">Time-lapse Videos</h3>
+                </div>
+            </div>
+
+            <!-- <div class="md:col-span-2 lg:col-span-1 md:row-span-1 group relative overflow-hidden rounded-3xl cursor-pointer shadow-lg">
+                <img src="assets/Deep Space" alt="Deep Space" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 text-white">
+                    <span class="text-xs font-bold uppercase tracking-widest text-indigo-400">Deep Field</span>
+                    <h3 class="text-lg font-bold mt-1">Orion Nebula</h3>
+                </div>
+            </div> -->
+
+        </div>
+    </div>
+</section>
+<section class="py-24 px-6 bg-slate-50 dark:bg-gray-900 transition-colors duration-500" id="stay-info">
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-4">Plan Your <span class="text-indigo-600">Celestial Escape</span></h2>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">From primitive camping under the Milky Way to luxury night-stay packages, we have the perfect spot for your journey.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            
+            <div class="group relative h-[450px] rounded-[2rem] overflow-hidden shadow-xl cursor-pointer">
+                <img src="assets/campaign" alt="Camping" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                
+                <div class="absolute inset-x-0 bottom-0 p-8 translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="p-2 bg-indigo-500 rounded-lg text-white"><i class="fa-solid fa-tent"></i></div>
+                        <h3 class="text-2xl font-bold text-white">Camping</h3>
+                    </div>
+                    <p class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 mb-4">
+                        Primitive and RV sites with shielded red-light zones to preserve night vision.
+                    </p>
+                    <a href="booknow.html">
+                                            <button class="w-full py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl font-bold hover:bg-white/20 transition">Check Availability</button>
+
+                    </a>    
+                </div>
+            </div>
+
+            <div class="group relative h-[450px] rounded-[2rem] overflow-hidden shadow-xl cursor-pointer">
+                <img src="assets/Cabin" alt="Cabin" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-purple-900/90 via-black/20 to-transparent"></div>
+                
+                <div class="absolute inset-x-0 bottom-0 p-8 translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="p-2 bg-purple-500 rounded-lg text-white"><i class="fa-solid fa-hotel"></i></div>
+                        <h3 class="text-2xl font-bold text-white">Luxury Stays</h3>
+                    </div>
+                    <p class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 mb-4">
+                        Glass-roofed cabins designed for stargazing directly from your bed.
+                    </p>
+                    <button class="w-full py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl font-bold hover:bg-white/20 transition">Book a Suite</button>
+                </div>
+            </div>
+
+            <div class="group relative h-[450px] rounded-[2rem] overflow-hidden shadow-xl cursor-pointer">
+                <img src="assets/Mountain Road" alt="Mountain Road" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-black/20 to-transparent"></div>
+                
+                <div class="absolute inset-x-0 bottom-0 p-8 translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="p-2 bg-blue-500 rounded-lg text-white"><i class="fa-solid fa-map-location-dot"></i></div>
+                        <h3 class="text-2xl font-bold text-white">Directions</h3>
+                    </div>
+                    <p class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 mb-4">
+                        Download offline maps. Note: GPS signal is limited within the 10-mile preserve radius.
+                    </p>
+                    <button class="w-full py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl font-bold hover:bg-white/20 transition">Get Map</button>
+                </div>
+            </div>
+
+            <div class="group relative h-[450px] rounded-[2rem] overflow-hidden shadow-xl cursor-pointer">
+                <div class="absolute inset-0 bg-slate-900 flex items-center justify-center">
+                    <i class="fa-solid fa-cloud-moon text-white/10 text-[15rem] absolute"></i>
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                
+                <div class="absolute inset-x-0 bottom-0 p-8">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="p-2 bg-slate-700 rounded-lg text-white"><i class="fa-solid fa-wind"></i></div>
+                        <h3 class="text-2xl font-bold text-white">Live Sky Tech</h3>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <div class="flex justify-between text-sm text-gray-400 border-b border-white/10 pb-2">
+                            <span>Cloud Cover</span> <span class="text-emerald-400 font-bold">5% (Clear)</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-400 border-b border-white/10 pb-2">
+                            <span>Visibility</span> <span class="text-emerald-400 font-bold">Excellent</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-400">
+                            <span>Temperature</span> <span class="text-white">12°C</span>
+                        </div>
+                    </div>
+                    <button class="w-full mt-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20">Check Live Radar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<section id="pricing" class="py-24 bg-white dark:bg-gray-950 transition-colors duration-300 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
+                Choose Your <span class="text-indigo-600">Observation Level</span>
+            </h2>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">
+                Simple, transparent pricing for every type of explorer.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+            
+            <div class="group p-8 rounded-3xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/40 hover:border-indigo-500/50 transition-all duration-500 hover:shadow-xl flex flex-col">
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Starlight Pass</h3>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-4xl font-black text-gray-900 dark:text-white">$29</span>
+                        <span class="text-gray-500">/visit</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">Perfect for casual observers and beginners.</p>
+                </div>
+
+                <ul class="space-y-4 mb-8 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                        <i class="fa-solid fa-check text-indigo-500"></i> Guided Constellation Tour
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                        <i class="fa-solid fa-check text-indigo-500"></i> Binocular Rental Included
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-gray-400 line-through">
+                        <i class="fa-solid fa-xmark text-gray-400"></i> Main Observatory Access
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-gray-400 line-through">
+                        <i class="fa-solid fa-xmark text-gray-400"></i> High-Res Astro-Photos
+                    </li>
+                </ul>
+
+                <a href="login.html" class="block w-full text-center py-4 rounded-xl border-2 border-indigo-600 text-indigo-600 font-bold hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                    Get Started
+                </a>
+            </div>
+
+            <div class="relative group p-10 rounded-[2.5rem] bg-indigo-600 shadow-2xl shadow-indigo-500/40 transform lg:scale-110 z-10 flex flex-col">
+                <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-amber-400 text-indigo-950 text-xs font-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                    Most Popular
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-white mb-2">Galactic Explorer</h3>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-5xl font-black text-white">$59</span>
+                        <span class="text-indigo-200">/visit</span>
+                    </div>
+                    <p class="mt-4 text-sm text-indigo-100">Full access for serious cosmic enthusiasts.</p>
+                </div>
+
+                <ul class="space-y-4 mb-10 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-white">
+                        <i class="fa-solid fa-circle-check text-amber-300"></i> All Starlight Features
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-white">
+                        <i class="fa-solid fa-circle-check text-amber-300"></i> 16" Telescope Viewing
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-white">
+                        <i class="fa-solid fa-circle-check text-amber-300"></i> Planet Viewing Session
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-white">
+                        <i class="fa-solid fa-circle-check text-amber-300"></i> Complimentary Hot Cocoa
+                    </li>
+                </ul>
+
+                <a href="login.html" class="block w-full text-center py-4 rounded-xl bg-white text-indigo-600 font-bold shadow-xl hover:bg-indigo-50 transition-all duration-300 active:scale-95">
+                    Book the Experience
+                </a>
+            </div>
+
+            <div class="md:col-span-2 lg:col-span-1 group p-8 rounded-3xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/40 hover:border-indigo-500/50 transition-all duration-500 hover:shadow-xl md:flex md:items-center md:justify-between lg:block">
+                
+                <div class="md:max-w-xs lg:max-w-none">
+                    <div class="mb-8 md:mb-0 lg:mb-8">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Nebula VIP</h3>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-4xl font-black text-gray-900 dark:text-white">$149</span>
+                            <span class="text-gray-500">/visit</span>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">The ultimate private observatory experience.</p>
+                    </div>
+                </div>
+
+                <div class="md:flex-1 md:ml-12 lg:ml-0">
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check text-indigo-500"></i> Private 1-on-1 Astronomer
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check text-indigo-500"></i> Deep Space Photography
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check text-indigo-500"></i> VIP Lounge Access
+                        </li>
+                    </ul>
+
+                    <a href="login.html" class="block w-full text-center py-4 rounded-xl border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white font-bold hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-900 transition-all duration-300">
+                        Go Premium
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<section class="py-24 px-6 bg-white dark:bg-gray-950 transition-colors duration-500 overflow-hidden" id="testimonials">
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="text-center mb-20">
+            <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-4">Voices from the <span class="text-indigo-600">Darkness</span></h2>
+            <p class="text-gray-500 dark:text-gray-400">Hear from our community of stargazers and explorers.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="group relative p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 transition-all duration-500 hover:shadow-[0_0_30px_rgba(79,70,229,0.15)] hover:-translate-y-2">
+                <div class="absolute -top-5 left-8 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <i class="fa-solid fa-quote-left"></i>
+                </div>
+                
+                <p class="text-lg italic text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
+                    "I’ve never seen the Milky Way with such clarity. The guided tour was life-changing; I felt like I could reach out and touch the stars."
+                </p>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <img src="assets/t1" alt="User" class="w-14 h-14 rounded-full border-2 border-indigo-500 group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-900"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900 dark:text-white">Sarah Jenkins</h4>
+                        <p class="text-xs text-indigo-500 font-bold uppercase tracking-wider">Professional Photographer</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group relative p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 transition-all duration-500 hover:shadow-[0_0_30px_rgba(79,70,229,0.15)] hover:-translate-y-2">
+                <div class="absolute -top-5 left-8 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <i class="fa-solid fa-quote-left"></i>
+                </div>
+                
+                <p class="text-lg italic text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
+                    "The telescope sessions are world-class. Seeing Saturn's rings for the first time through their 20-inch aperture was a core memory for my kids."
+                </p>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <img src="assets/t2" alt="User" class="w-14 h-14 rounded-full border-2 border-indigo-500 group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-900"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900 dark:text-white">Marcus Thorne</h4>
+                        <p class="text-xs text-indigo-500 font-bold uppercase tracking-wider">Hobbyist Astronomer</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group relative p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 transition-all duration-500 hover:shadow-[0_0_30px_rgba(79,70,229,0.15)] hover:-translate-y-2 md:col-span-2 lg:col-span-1">
+                <div class="absolute -top-5 left-8 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <i class="fa-solid fa-quote-left"></i>
+                </div>
+                
+                <p class="text-lg italic text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
+                    "A perfect escape from the city. The cabins are cozy, and the staff's passion for the dark sky is truly infectious. We will be back every year."
+                </p>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <img src="assets/t3" alt="User" class="w-14 h-14 rounded-full border-2 border-indigo-500 group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-900"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900 dark:text-white">Elena Rodriguez</h4>
+                        <p class="text-xs text-indigo-500 font-bold uppercase tracking-wider">Nature Enthusiast</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<section class="relative py-28 px-6 overflow-hidden bg-slate-950 transition-colors duration-500">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-30">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600 rounded-full blur-[120px] animate-pulse" style="animation-delay: 2s;"></div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto text-center">
+        <span class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-[0.2em] text-indigo-400 uppercase border border-indigo-400/30 rounded-full bg-indigo-500/5 backdrop-blur-sm">
+            Ready for takeoff?
+        </span>
+
+        <h2 class="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tighter leading-none">
+            The Universe <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">Is Waiting.</span>
+        </h2>
+
+        <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+            Join thousands of stargazers who have rediscovered the beauty of our galaxy. Limited spots available for the upcoming meteor shower.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+           <a href="booknow.html">
+             <button class="group relative px-10 py-5 bg-white text-gray-950 font-black rounded-2xl hover:bg-indigo-50 transition-all duration-300 transform hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(99,102,241,0.6)]">
+                <span class="flex items-center gap-3">
+                    🌌 Book Your Night Adventure
+                </span>
+            </button>
+           </a>
+           
+            
+            <a href="contact.html" class="text-white font-bold hover:text-indigo-400 transition-colors border-b-2 border-white/20 hover:border-indigo-400 pb-1">
+                Inquire for Groups
+            </a>
+        </div>
+    </div>
+
+    <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-[0]">
+        <svg class="relative block w-full h-12" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M1200 120L0 120 0 0C161.3 23.5 351.5 44.4 600 44.4C848.5 44.4 1038.7 23.5 1200 0V120Z" class="fill-white dark:fill-gray-900 transition-colors duration-500"></path>
+        </svg>
+    </div>
+</section>
+
+  <footer class="bg-gray-100 dark:bg-gray-900 pt-16 pb-8 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 xl:gap-4 mb-12">
+            
+            <div class="flex flex-col items-start">
+                <a href="index.html" class="group">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-moon text-indigo-500 text-2xl transition-transform group-hover:rotate-12"></i>
+                        <span class="text-xl font-bold tracking-tighter dark:text-white">STELLARIS</span>
+                    </div>
+                </a>
+                <p class="mt-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed max-w-xs">
+                    Exploring the cosmos from Nebula Valley. Join us under the stars.
+                </p>
+                <div class="flex gap-4 mt-6">
+                    <a href="#" class="text-gray-500 hover:text-indigo-500 transition-colors text-xl"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-500 transition-colors text-xl"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-500 transition-colors text-xl"><i class="fa-brands fa-facebook"></i></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-6 text-gray-900 dark:text-white uppercase tracking-wider text-sm">Navigation</h4>
+                <ul class="space-y-3 text-gray-600 dark:text-gray-400">
+                    <li><a href="index.html" class="hover:text-indigo-500 transition-colors">Home</a></li>
+                    <li><a href="home2.html" class="hover:text-indigo-500 transition-colors">Home2</a></li>
+                    <li><a href="booknow.html" class="hover:text-indigo-500 transition-colors">Book Now</a></li>
+                    <li><a href="about.html" class="hover:text-indigo-500 transition-colors">About Us</a></li>
+                    <li><a href="gallery.html" class="hover:text-indigo-500 transition-colors">Gallery</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-6 text-gray-900 dark:text-white uppercase tracking-wider text-sm">Resources</h4>
+                <ul class="space-y-3 text-gray-600 dark:text-gray-400">
+                    <li><a href="service.html" class="hover:text-indigo-500 transition-colors">Services</a></li>
+                    <li><a href="pricing.html" class="hover:text-indigo-500 transition-colors">Pricing</a></li>
+                    <li><a href="contact.html" class="hover:text-indigo-500 transition-colors">Contact</a></li>
+                    <li><a href="404.html" class="hover:text-indigo-500 transition-colors">404 Page</a></li>
+                    <li><a href="comingsoon.html" class="hover:text-indigo-500 transition-colors">Coming Soon</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-6 text-gray-900 dark:text-white uppercase tracking-wider text-sm">Contact Us</h4>
+                <div class="space-y-4 text-gray-600 dark:text-gray-400">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-location-dot mt-1 text-indigo-500"></i>
+                        <span>123 Galaxy Way,<br>Nebula Valley, NV 89101</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-envelope text-indigo-500"></i>
+                        <a href="mailto:hello@stellaris.com" class="hover:text-indigo-500">hello@stellaris.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sm:col-span-2 lg:col-span-1">
+                <h4 class="font-bold mb-6 text-gray-900 dark:text-white uppercase tracking-wider text-sm">Newsletter</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Stay updated with our latest cosmic discoveries.</p>
+                <form class="flex flex-col gap-2">
+                    <input type="email" placeholder="Your email" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 p-2.5 rounded-lg w-full outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white transition-all">
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 rounded-lg text-white font-semibold transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
+                        Join the Journey
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center text-sm text-gray-500 border-t border-gray-200 dark:border-gray-800 pt-8">
+            <p>&copy; 2026 Stellaris Dark Sky Preserve. All rights reserved.</p>
+            <div class="flex justify-center gap-6 mt-4">
+                <a href="#" class="hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-gray-900 dark:hover:text-white transition-colors">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const root = document.documentElement;
+        const mobMenu = document.getElementById('mobile-menu');
+        const mobBtn = document.getElementById('mobile-menu-btn');
+
+        // --- 1. THEME LOGIC ---
+        const updateTheme = (isDark) => {
+            root.classList.toggle('dark', isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        };
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            updateTheme(true);
+        }
+
+        // Targets both desktop and mobile toggle IDs
+        document.querySelectorAll('#theme-toggle, #theme-toggle-desktop, #theme-toggle-m').forEach(btn => {
+            btn.onclick = () => updateTheme(!root.classList.contains('dark'));
+        });
+
+        // --- 2. DIRECTION LOGIC ---
+        const updateDirection = (dir) => {
+            root.dir = dir;
+            localStorage.setItem('dir', dir);
+            document.querySelectorAll('#dir-toggle, #dir-toggle-desktop, #dir-toggle-m').forEach(btn => {
+                btn.innerHTML = dir === 'rtl' ? '<i class="fa-solid fa-language"></i> RTL' : '<i class="fa-solid fa-language"></i> LTR';
+            });
+        };
+
+        if (localStorage.getItem('dir')) updateDirection(localStorage.getItem('dir'));
+
+        document.querySelectorAll('#dir-toggle, #dir-toggle-desktop, #dir-toggle-m').forEach(btn => {
+            btn.onclick = () => updateDirection(root.dir === 'rtl' ? 'ltr' : 'rtl');
+        });
+
+        // --- 3. MOBILE MENU FIX ---
+        if (mobBtn && mobMenu) {
+            mobBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = mobMenu.classList.toggle('hidden');
+                mobBtn.innerHTML = isHidden ? 
+                    '<i class="fa-solid fa-bars-staggered"></i>' : 
+                    '<i class="fa-solid fa-xmark"></i>';
+            });
+
+            // Close when clicking links
+            mobMenu.querySelectorAll('a').forEach(item => {
+                item.addEventListener('click', () => {
+                    mobMenu.classList.add('hidden');
+                    mobBtn.innerHTML = '<i class="fa-solid fa-bars-staggered"></i>';
+                });
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobMenu.contains(e.target) && !mobBtn.contains(e.target)) {
+                    mobMenu.classList.add('hidden');
+                    mobBtn.innerHTML = '<i class="fa-solid fa-bars-staggered"></i>';
+                }
+            });
+        }
+    });
+</script>
+
+<!-- <script>
+    const root = document.documentElement;
+    const mobMenu = document.getElementById('mobile-menu');
+    const mobBtn = document.getElementById('mobile-menu-btn');
+
+    // --- 1. THEME LOGIC ---
+    const updateTheme = (isDark) => {
+        root.classList.toggle('dark', isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    };
+
+    // Init Theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        updateTheme(true);
+    }
+
+    document.querySelectorAll('#theme-toggle, #theme-toggle-m').forEach(btn => {
+        btn.onclick = () => updateTheme(!root.classList.contains('dark'));
+    });
+
+    // --- 2. DIRECTION LOGIC ---
+    const updateDirection = (dir) => {
+        root.dir = dir;
+        localStorage.setItem('dir', dir);
+        document.querySelectorAll('#dir-toggle, #dir-toggle-m').forEach(btn => {
+            btn.innerHTML = dir === 'rtl' ? '<i class="fa-solid fa-language"></i> RTL' : '<i class="fa-solid fa-language"></i> LTR';
+        });
+    };
+
+    if (localStorage.getItem('dir')) updateDirection(localStorage.getItem('dir'));
+
+    document.querySelectorAll('#dir-toggle, #dir-toggle-m').forEach(btn => {
+        btn.onclick = () => updateDirection(root.dir === 'rtl' ? 'ltr' : 'rtl');
+    });
+
+    // --- 3. MOBILE MENU FIX ---
+    if (mobBtn && mobMenu) {
+        // Toggle Logic
+        mobBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = mobMenu.classList.contains('hidden');
+            if (isHidden) {
+                mobMenu.classList.remove('hidden');
+                // Optional: Change icon to X when open
+                mobBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            } else {
+                mobMenu.classList.add('hidden');
+                mobBtn.innerHTML = '<i class="fa-solid fa-bars-staggered"></i>';
+            }
+        });
+
+        // Close when clicking any link inside
+        mobMenu.querySelectorAll('a, button').forEach(item => {
+            item.addEventListener('click', () => {
+                mobMenu.classList.add('hidden');
+                mobBtn.innerHTML = '<i class="fa-solid fa-bars-staggered"></i>';
+            });
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobMenu.contains(e.target) && !mobBtn.contains(e.target)) {
+                mobMenu.classList.add('hidden');
+                mobBtn.innerHTML = '<i class="fa-solid fa-bars-staggered"></i>';
+            }
+        });
+    }
+
+    // --- 4. AUTO ACTIVE STATE (SCROLL SPY) ---
+    const navLinks = document.querySelectorAll('.nav-item, .mobile-nav-item');
+    const sections = document.querySelectorAll('section[id]');
+
+    window.addEventListener('scroll', () => {
+        let current = "";
+        sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (pageYOffset >= sectionTop - 100) {
+                current = section.getAttribute("id");
+            }
+        });
+
+        navLinks.forEach((link) => {
+            link.classList.remove("nav-active", "mobile-nav-active");
+            if (link.getAttribute("href") === `#${current}`) {
+                link.classList.add(link.classList.contains('nav-item') ? "nav-active" : "mobile-nav-active");
+            }
+        });
+    });
+</script> -->
+</body>
+</html>
