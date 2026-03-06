@@ -92,11 +92,13 @@
                         <span x-text="isRtl ? 'English (LTR)' : 'Arabic (RTL)'"></span>
                         <i class="fa-solid fa-language text-sm"></i>
                     </button>
-
-                    <button @click="logout()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 font-black text-[10px] uppercase tracking-widest transition-all">
+                    <a href="login.html">
+                        <button @click="logout()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 font-black text-[10px] uppercase tracking-widest transition-all">
                         <i class="fa-solid fa-power-off"></i>
                         <span>Logout Session</span>
                     </button>
+                    </a>
+                    
                 </div>
             </div>
         </aside>

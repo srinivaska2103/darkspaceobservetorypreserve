@@ -47,11 +47,13 @@
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500 min-h-screen">
 
     <nav class="fixed top-0 w-full z-50 p-6 flex justify-end items-center gap-4">
-        <button id="dir-toggle" class="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg text-xs font-black hover:border-indigo-500 transition-all active:scale-95">
-            </button>
-        <button id="theme-toggle" class="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg hover:border-indigo-500 transition-all active:scale-95 text-indigo-600 dark:text-amber-400">
-            <i id="theme-icon" class="fa-solid"></i>
-        </button>
+       <button id="dir-toggle" class="dir-toggle px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg text-xs font-black hover:border-indigo-500 transition-all active:scale-95 dark:text-white">
+    LTR
+</button>
+
+<button id="theme-toggle" class="theme-toggle p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg hover:border-indigo-500 transition-all active:scale-95 text-indigo-600 dark:text-amber-400">
+    <i id="theme-icon" class="theme-icon fa-solid fa-moon text-xl"></i>
+</button>
     </nav>
 
     <main class="flex items-center justify-center min-h-screen p-4">
@@ -120,8 +122,113 @@
             </div>
         </div>
     </main>
+    <!-- <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const root = document.documentElement;
 
-    <script>
+    /**
+     * 1. THEME UPDATER
+     * Handles Class toggling, LocalStorage, and Icon swapping for ALL instances
+     */
+    const updateTheme = (isDark) => {
+        // Toggle 'dark' class on <html> element
+        root.classList.toggle('dark', isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+        // Update all icons found on the page (Desktop & Mobile)
+        const icons = document.querySelectorAll('.theme-icon');
+        icons.forEach(icon => {
+            if (isDark) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+    };
+
+    /**
+     * 2. INITIALIZE
+     * Checks storage or system preference on load
+     */
+    const savedTheme = localStorage.getItem('theme');
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialDark = savedTheme === 'dark' || (!savedTheme && systemDark);
+    
+    updateTheme(initialDark);
+
+    /**
+     * 3. EVENT LISTENERS
+     * Listen for clicks on any element with the 'theme-toggle' class
+     */
+    document.addEventListener('click', (e) => {
+        // Check if the clicked element (or its parent) is a theme-toggle
+        const btn = e.target.closest('.theme-toggle');
+        if (btn) {
+            const isNowDark = !root.classList.contains('dark');
+            updateTheme(isNowDark);
+        }
+    });
+});
+</script> -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const root = document.documentElement;
+
+    // --- 1. THEME LOGIC ---
+    const updateTheme = (isDark) => {
+        root.classList.toggle('dark', isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        
+        // Update all theme icons on the page
+        const icons = document.querySelectorAll('.theme-icon, #theme-icon');
+        icons.forEach(icon => {
+            if (isDark) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+    };
+
+    // Initialize Theme
+    const savedTheme = localStorage.getItem('theme');
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    updateTheme(savedTheme === 'dark' || (!savedTheme && systemDark));
+
+    // Theme Click Listener
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.theme-toggle') || e.target.closest('#theme-toggle')) {
+            updateTheme(!root.classList.contains('dark'));
+        }
+    });
+
+
+    // --- 2. DIRECTION LOGIC (LTR/RTL) ---
+    const updateDirection = (dir) => {
+        root.setAttribute('dir', dir);
+        localStorage.setItem('dir', dir);
+        
+        // Update all direction button text labels
+        const dirBtns = document.querySelectorAll('.dir-toggle, #dir-toggle');
+        dirBtns.forEach(btn => {
+            btn.innerText = dir.toUpperCase();
+        });
+    };
+
+    // Initialize Direction
+    const savedDir = localStorage.getItem('dir') || 'ltr';
+    updateDirection(savedDir);
+
+    // Direction Click Listener
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.dir-toggle') || e.target.closest('#dir-toggle')) {
+            const newDir = root.getAttribute('dir') === 'rtl' ? 'ltr' : 'rtl';
+            updateDirection(newDir);
+        }
+    });
+});
+</script>
+    <!-- <script>
         const root = document.documentElement;
         const themeBtn = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
@@ -165,6 +272,6 @@
             document.getElementById('login-form').classList.toggle('hidden');
             document.getElementById('signup-form').classList.toggle('hidden');
         }
-    </script>
+    </script> -->
 </body>
 </html>
