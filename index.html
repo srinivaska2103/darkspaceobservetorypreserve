@@ -181,56 +181,57 @@
         </div>
     </section>
 
-    <section class="py-20 px-6 bg-white dark:bg-gray-950 transition-colors duration-300" id="about">
+<section class="py-20 px-6 bg-white dark:bg-gray-950 transition-colors duration-300" id="about">
     <div class="max-w-7xl mx-auto">
         
-        <div class="flex flex-col lg:flex-row items-center gap-12 mb-16">
-            <div class="lg:w-1/2 space-y-6">
-                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20 mb-20">
+            
+            <div class="lg:w-1/2 space-y-8 text-center lg:text-left">
+                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
                     About the <span class="text-indigo-600 dark:text-indigo-400">Preserve</span>
                 </h2>
-                <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                     “Located far from urban light pollution, our Dark Sky Preserve offers pristine night skies, guided telescope sessions, and immersive astronomy experiences for all ages.”
                 </p>
                 <div class="pt-4">
-                    <button class="px-6 py-2 border-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 font-bold rounded-full hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-400 dark:hover:text-gray-950 transition-all">
+                    <button class="px-8 py-3 border-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 font-bold rounded-full hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-400 dark:hover:text-gray-950 transition-all shadow-lg hover:shadow-indigo-500/20">
                         Learn More <i class="fa-solid fa-arrow-right ml-2"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="hidden lg:block lg:w-1/2 relative">
+            <div class="lg:w-1/2 relative flex justify-center lg:justify-end">
                 <div class="absolute -inset-4 bg-indigo-500/20 blur-3xl rounded-full"></div>
                 <img src="assets/Observatory Dome" 
                      alt="Observatory Dome" 
-                     class="relative rounded-2xl shadow-2xl border border-white/10 grayscale hover:grayscale-0 transition duration-700">
+                     class="relative w-full max-w-lg rounded-2xl shadow-2xl border border-white/10 grayscale hover:grayscale-0 transition duration-700 aspect-video lg:aspect-square object-cover">
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            <div class="group p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-500 transition-all duration-300 hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-indigo-500/10">
+            <div class="group h-full p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-500 transition-all duration-300 hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-indigo-500/10 flex flex-col">
                 <div class="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-certificate text-indigo-600 dark:text-indigo-400 text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold mb-3">Certified Dark Sky</h3>
-                <p class="text-gray-600 dark:text-gray-400">Recognized globally for maintaining pristine, natural darkness and celestial visibility.</p>
+                <p class="text-gray-600 dark:text-gray-400 flex-grow">Recognized globally for maintaining pristine, natural darkness and celestial visibility.</p>
             </div>
 
-            <div class="group p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-500 transition-all duration-300 hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-indigo-500/10">
+            <div class="group h-full p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-500 transition-all duration-300 hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-indigo-500/10 flex flex-col">
                 <div class="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-low-vision text-indigo-600 dark:text-indigo-400 text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold mb-3">Minimal Pollution</h3>
-                <p class="text-gray-600 dark:text-gray-400">Strict lighting ordinances ensure 99% reduction in artificial skyglow compared to urban areas.</p>
+                <p class="text-gray-600 dark:text-gray-400 flex-grow">Strict lighting ordinances ensure 99% reduction in artificial skyglow compared to urban areas.</p>
             </div>
 
-            <div class="group p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-500 transition-all duration-300 hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-indigo-500/10 md:col-span-2 lg:col-span-1">
+            <div class="group h-full p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-500 transition-all duration-300 hover:-translate-y-2 cursor-pointer shadow-sm hover:shadow-indigo-500/10 flex flex-col md:col-span-2 lg:col-span-1">
                 <div class="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-leaf text-indigo-600 dark:text-indigo-400 text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold mb-3">Eco-Friendly</h3>
-                <p class="text-gray-600 dark:text-gray-400">Our facilities run on 100% renewable energy to preserve the earth while we watch the stars.</p>
+                <p class="text-gray-600 dark:text-gray-400 flex-grow">Our facilities run on 100% renewable energy to preserve the earth while we watch the stars.</p>
             </div>
 
         </div>

@@ -6,45 +6,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="icon" href="assets/moon.png">
+    <link rel="icon" href="assets/moon.png">
     <title>Stellaris | Visitor Dashboard</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class', // Crucial: tells Tailwind to look for the .dark class
+            darkMode: 'class',
         }
     </script>
-
-    <script>
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         [x-cloak] { display: none !important; }
-        /* Forces smooth transitions on every element for a premium feel */
-        * { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        * { transition: background-color 0.2s ease, border-color 0.2s ease; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
     </style>
+    <script>
+    // Check localStorage OR system preference
+    if (localStorage.getItem('darkMode') === 'true' || 
+        (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+</script>
 </head>
 
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen overflow-x-hidden">
 
     <header class="lg:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b dark:border-slate-800 sticky top-0 z-50">
-       <a href="index.html">
-        <div class="flex items-center gap-3">
-         <i class="fa-solid fa-moon text-indigo-500 text-2xl"></i>
-                    <span class="text-xl font-bold tracking-tighter">STELLARIS</span>
+        <a href="index.html">
+            <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <i class="fa-solid fa-moon text-white text-sm"></i>
+            </div>
+            <span class="text-lg font-bold tracking-tighter">STELLARIS</span>
         </div>
-    </a>
+        </a>
         
-        <button @click="sidebarOpen = !sidebarOpen" class="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg">
+        <button @click="sidebarOpen = true" class="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg">
             <i class="fa-solid fa-bars-staggered text-2xl"></i>
         </button>
     </header>
@@ -58,240 +63,528 @@
 
         <aside 
             x-cloak
-            :class="sidebarOpen ? 'translate-x-0' : (isRtl ? (isRtl ? 'translate-x-full' : '-translate-x-full') : '-translate-x-full')"
-            class="fixed inset-y-0 z-50 w-72 bg-white dark:bg-slate-900 border-r dark:border-slate-800 lg:translate-x-0 lg:static lg:inset-0 flex flex-col shadow-2xl lg:shadow-none">
+            :class="sidebarOpen ? 'translate-x-0' : (isRtl ? 'translate-x-full' : '-translate-x-full')"
+            class="fixed inset-y-0 z-50 w-72 bg-white dark:bg-slate-900 border-r dark:border-slate-800 lg:translate-x-0 lg:static lg:inset-0 flex flex-col shadow-2xl lg:shadow-none transition-transform duration-300 ease-in-out">
             
             <div class="h-full flex flex-col p-6">
-                <a href="index.html">
-                     <div class="hidden lg:flex items-center gap-3 mb-12 px-2">
-                     <i class="fa-solid fa-moon text-indigo-500 text-2xl"></i>
-                    <span class="text-xl font-bold tracking-tighter">STELLARIS</span>
+                <div class="flex items-center justify-between mb-10 px-2">
+                    <a href="index.html" class="flex items-center gap-3 group">
+                        <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:rotate-12 transition-transform">
+                            <i class="fa-solid fa-moon text-white text-xl"></i>
+                        </div>
+                        <span class="text-xl font-bold tracking-tighter dark:text-white">STELLARIS</span>
+                    </a>
+                    <button @click="sidebarOpen = false" class="lg:hidden p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
                 </div>
-                </a>
-               
 
-                <nav class="flex-1 space-y-2">
+                <nav class="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2">
                     <template x-for="tab in tabs" :key="tab.id">
                         <button 
                             @click="activeTab = tab.id; if(window.innerWidth < 1024) sidebarOpen = false"
-                            :class="activeTab === tab.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                            class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest group">
-                            <i :class="tab.icon" class="w-5 text-lg group-hover:scale-110 transition-transform"></i>
-                            <span x-text="tab.name"></span>
+                            :class="activeTab === tab.id 
+                                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' 
+                                : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'"
+                            class="w-full flex items-center justify-between px-4 py-3 rounded-2xl font-bold text-[10px] uppercase tracking-[0.15em] group transition-all duration-300">
+                            <div class="flex items-center gap-4">
+                                <div class="relative w-6 flex justify-center">
+                                    <i :class="tab.icon" class="text-lg group-hover:scale-110 transition-transform"></i>
+                                    <template x-if="tab.id === 'scope'">
+                                        <span class="absolute -top-1 -right-1 flex h-2 w-2">
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                        </span>
+                                    </template>
+                                </div>
+                                <span x-text="tab.name"></span>
+                            </div>
+                            <i x-show="activeTab === tab.id" class="fa-solid fa-chevron-right text-[8px] opacity-50"></i>
                         </button>
                     </template>
                 </nav>
 
                 <div class="border-t dark:border-slate-800 pt-6 space-y-3">
-                    <button @click="toggleDarkMode()" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest hover:ring-2 ring-indigo-500 transition-all">
-                        <span x-text="darkMode ? 'Switch to Light' : 'Switch to Dark'"></span>
-                        <i :class="darkMode ? 'fa-sun text-amber-400' : 'fa-moon text-indigo-600'" class="fa-solid text-sm"></i>
+                    <button @click="toggleDarkMode()" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 text-[10px] font-black uppercase tracking-widest hover:ring-2 ring-indigo-500/50 transition-all">
+                        <div class="flex items-center gap-3">
+                            <i :class="darkMode ? 'fa-sun text-amber-400' : 'fa-moon text-indigo-600'" class="fa-solid text-sm"></i>
+                            <span class="dark:text-slate-300" x-text="darkMode ? 'Light Mode' : 'Dark Mode'"></span>
+                        </div>
+                        <div class="w-8 h-4 bg-slate-200 dark:bg-slate-700 rounded-full relative">
+                            <div :class="darkMode ? 'translate-x-4 bg-amber-400' : 'translate-x-0 bg-indigo-600'" class="absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-transform"></div>
+                        </div>
                     </button>
 
-                    <button @click="toggleRtl()" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest hover:ring-2 ring-indigo-500 transition-all">
-                        <span x-text="isRtl ? 'English (LTR)' : 'Arabic (RTL)'"></span>
-                        <i class="fa-solid fa-language text-sm"></i>
+                    <button @click="toggleRtl()" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 text-[10px] font-black uppercase tracking-widest transition-all">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-language text-sm text-indigo-500"></i>
+                            <span class="dark:text-slate-300" x-text="isRtl ? 'English' : 'Arabic'"></span>
+                        </div>
+                        <i class="fa-solid fa-right-left text-[10px] opacity-30"></i>
                     </button>
-                    <a href="login.html">
-                        <button @click="logout()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 font-black text-[10px] uppercase tracking-widest transition-all">
+
+                    <button @click="logout()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 font-black text-[10px] uppercase tracking-widest transition-all">
                         <i class="fa-solid fa-power-off"></i>
-                        <span>Logout Session</span>
+                        <span>Terminate Session</span>
                     </button>
-                    </a>
-                    
                 </div>
             </div>
         </aside>
 
-        <main class="flex-1 p-4 md:p-8 lg:p-12 overflow-y-auto">
+        <main class="flex-1 p-4 md:p-8 lg:p-12 overflow-y-auto max-w-full">
             
-            <div x-show="activeTab === 'home'" x-transition:enter class="space-y-8">
-    
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div x-show="activeTab === 'dashboard'" x-transition:enter class="space-y-8">
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-            <h2 class="text-xs font-black text-indigo-600 uppercase tracking-[0.4em] mb-2">Observation Stats</h2>
-            <h3 class="text-4xl md:text-5xl font-black uppercase tracking-tighter">Home<span class="text-indigo-600">Dashboard</span></h3>
+            <h2 class="text-xs font-black text-indigo-600 uppercase tracking-[0.4em] mb-2">Live Telemetry</h2>
+            <h3 class="text-4xl md:text-5xl font-black uppercase tracking-tighter">User<span class="text-indigo-600">Dashboard</span></h3>
         </div>
         
-        <div class="flex items-center gap-4 bg-emerald-500/10 border border-emerald-500/20 px-6 py-4 rounded-[2rem] group cursor-pointer hover:bg-emerald-500/20 transition-all">
-            <div class="relative">
-                <i class="fa-solid fa-telescope text-emerald-500 text-2xl group-hover:rotate-12 transition-transform"></i>
-                <div class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
+        <div class="flex items-center gap-4 bg-indigo-500/10 border border-indigo-500/20 px-6 py-4 rounded-[2rem]">
+            <div class="flex -space-x-2">
+                <template x-for="i in 3">
+                    <div class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold">
+                        <i class="fa-solid fa-user text-indigo-500"></i>
+                    </div>
+                </template>
             </div>
+            <p class="text-xs font-bold uppercase tracking-widest text-slate-500">8 Astronomers Online</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        
+        <div class="xl:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[3rem] border dark:border-slate-800 shadow-sm relative overflow-hidden group">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h4 class="font-black uppercase tracking-tighter text-xl">Sky Clarity Forecast</h4>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Next 24 Hours • High Altitude</p>
+                </div>
+                <select class="bg-slate-100 dark:bg-slate-800 border-none rounded-xl text-[10px] font-black uppercase py-2 px-4 outline-none focus:ring-2 ring-indigo-500">
+                    <option>Visual Band</option>
+                    <option>Infrared</option>
+                </select>
+            </div>
+            
+            <div class="h-[300px] w-full">
+                <canvas id="clarityChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-indigo-600 rounded-[3rem] p-8 text-white flex flex-col justify-between shadow-2xl shadow-indigo-600/20 relative overflow-hidden">
+            <i class="fa-solid fa-atom absolute -top-10 -right-10 text-9xl text-white/10 rotate-12"></i>
+            
             <div>
-                <p class="text-[10px] font-black uppercase text-emerald-600">Sky Quality</p>
-                <p class="font-bold text-sm">Bortle Class 1 (Excellent)</p>
+                <h4 class="font-black uppercase tracking-tighter text-xl mb-1">Atmosphere</h4>
+                <p class="text-[10px] font-bold text-indigo-200 uppercase tracking-[0.2em] mb-8">Real-time Composition</p>
+                
+                <div class="space-y-6 relative z-10">
+                    <template x-for="gas in ['Nitrogen', 'Oxygen', 'Argon']">
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[10px] font-black uppercase">
+                                <span x-text="gas"></span>
+                                <span x-text="gas === 'Nitrogen' ? '78%' : gas === 'Oxygen' ? '21%' : '1%'"></span>
+                            </div>
+                            <div class="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
+                                <div class="h-full bg-white transition-all duration-1000" :style="`width: ${gas === 'Nitrogen' ? '78' : gas === 'Oxygen' ? '21' : '5'}%`"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
             </div>
+
+            <button class="w-full mt-8 py-4 bg-white text-indigo-600 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-indigo-50 transition-colors">
+                Deep Scan Details
+            </button>
         </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <template x-for="stat in stats" :key="stat.label">
-            <div class="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border dark:border-slate-800 group hover:border-indigo-500 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                <div class="flex justify-between items-start mb-6">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest" x-text="stat.label"></p>
-                    <div class="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
-                        <i :class="stat.icon" class="text-indigo-600 text-xs"></i>
+            <div class="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border dark:border-slate-800 group hover:border-indigo-500 transition-all duration-300">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1" x-text="stat.label"></p>
+                        <p class="text-4xl font-black tracking-tighter" x-text="stat.value"></p>
                     </div>
-                </div>
-                <p class="text-5xl font-black tracking-tighter" x-text="stat.value"></p>
-                <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 mt-6 rounded-full overflow-hidden">
-                    <div class="bg-indigo-600 h-full transition-all duration-1000" :style="`width: ${stat.percent}%`"></div>
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-indigo-500 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
+                        <i :class="stat.icon" class="text-xl"></i>
+                    </div>
                 </div>
             </div>
         </template>
     </div>
-
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        
-        <div class="xl:col-span-2 bg-slate-900 rounded-[3rem] p-8 text-white relative overflow-hidden group min-h-[400px]">
-            <div class="relative z-10">
-                <h4 class="text-xl font-black uppercase italic tracking-tighter mb-1 text-indigo-400">Live View</h4>
-                <p class="text-3xl font-black uppercase tracking-tighter mb-6">Current Star Map</p>
-                
-                <div class="relative w-full h-64 border border-white/10 rounded-full flex items-center justify-center overflow-hidden bg-slate-950/50">
-                    <div class="absolute inset-0 opacity-30 animate-[spin_60s_linear_infinite]">
-                        <div class="absolute top-10 left-20 w-1 h-1 bg-white rounded-full shadow-[0_0_8px_white]"></div>
-                        <div class="absolute top-40 left-60 w-1.5 h-1.5 bg-indigo-400 rounded-full shadow-[0_0_10px_indigo]"></div>
-                        <div class="absolute top-20 right-20 w-1 h-1 bg-white rounded-full"></div>
-                    </div>
-                    <div class="z-10 text-center">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-300">Targeting</p>
-                        <p class="text-lg font-black uppercase">Andromeda Galaxy</p>
-                    </div>
-                </div>
-            </div>
-            
-            
-            
-            <button class="absolute bottom-8 right-8 px-6 py-3 bg-indigo-600 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-white hover:text-indigo-600 transition-all">
-                Full Screen Map
-            </button>
-        </div>
-
-        <div class="space-y-6">
-            <div class="p-8 bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-[2.5rem]">
-                <h4 class="font-black uppercase tracking-tighter text-xl mb-4">Quick Register</h4>
-                <form @submit.prevent="alert('Slot Requested!')" class="space-y-4">
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Telescope Unit</label>
-                        <select class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 ring-indigo-500 outline-none">
-                            <option>14" Celestron EdgeHD</option>
-                            <option>Solar Scope S1</option>
-                            <option>Deep Sky Rig B</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Time Slot</label>
-                        <input type="time" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 ring-indigo-500 outline-none">
-                    </div>
-                    <button class="w-full py-4 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-600/20 hover:scale-[1.02] active:scale-95 transition-all">
-                        Request Slot
-                    </button>
-                </form>
-            </div>
-
-            <div class="p-8 bg-amber-500/10 border border-amber-500/20 rounded-[2.5rem]">
-                <div class="flex items-center gap-3 mb-4 text-amber-600 dark:text-amber-500">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    <h4 class="font-black uppercase tracking-tighter">Sky Alerts</h4>
-                </div>
-                <ul class="space-y-3">
-                    <li class="flex items-center gap-3 text-xs font-bold opacity-80">
-                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                        High Altitude Haze at 11:00 PM
-                    </li>
-                    <li class="flex items-center gap-3 text-xs font-bold opacity-80">
-                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-                        ISS Flyover: 02:14 AM
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
 </div>
 
-            <div x-show="activeTab === 'bookings'" x-transition:enter x-cloak>
+            <div x-show="activeTab === 'reserve'" x-transition:enter x-cloak>
                 <h3 class="text-3xl font-black uppercase tracking-tighter mb-8">Celestial <span class="text-indigo-600">Lodging</span></h3>
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     <div class="group bg-white dark:bg-slate-900 rounded-[3rem] overflow-hidden border dark:border-slate-800 hover:border-indigo-500 transition-all">
-                        <div class="h-72 overflow-hidden relative">
-                            <img src="assets/campaign" class="w-full h-full object-cover">
-                        </div>
+                        <div class="h-72 overflow-hidden relative group">
+    <img 
+        src="assets/campaign"
+        alt="Kepler Pod" 
+        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+    >
+
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+
+    <div class="absolute top-4 left-4 flex gap-2">
+        <span class="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
+            Premium
+        </span>
+        <span class="px-3 py-1 bg-white/10 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-full border border-white/20">
+            <i class="fa-solid fa-wifi text-[8px] mr-1 text-emerald-400"></i> Up-Link Active
+        </span>
+    </div>
+
+    <div class="absolute bottom-4 right-4 bg-white dark:bg-slate-900 px-4 py-2 rounded-2xl shadow-xl">
+        <p class="text-[8px] font-black text-slate-400 uppercase leading-none">Per Night</p>
+        <p class="text-lg font-black text-indigo-600 tracking-tighter">$249</p>
+    </div>
+</div>
                         <div class="p-10">
                             <h4 class="text-2xl font-black uppercase mb-4">The Kepler Pod</h4>
                             <p class="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed">Luxury observation dome with 360-degree night sky views and professional telescope integration.</p>
-                            <a href="booknow.html">
-                                <button class="w-full py-5 bg-slate-900 dark:bg-indigo-600 text-white font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-indigo-500 transition-all">
+                            <button class="w-full py-5 bg-indigo-600 text-white font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-indigo-500 transition-all">
                                 Book This Pod
                             </button>
-                            </a>
-                            
                         </div>
                     </div>
                 </div>
             </div>
+<div x-show="activeTab === 'scope'" x-transition:enter class="space-y-8">
+    
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <h2 class="text-xs font-black text-emerald-500 uppercase tracking-[0.4em] mb-2">Remote Imaging</h2>
+            <h3 class="text-4xl md:text-5xl font-black uppercase tracking-tighter">Scope<span class="text-indigo-600">Access</span></h3>
+        </div>
+        
+        <div class="flex items-center gap-4 bg-slate-900 px-6 py-4 rounded-[2rem] border border-white/10">
+            <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+            <p class="text-[10px] font-black uppercase tracking-widest text-indigo-300">Signal: 45ms (Laguna Peak Station)</p>
+        </div>
+    </div>
 
-            <div class="mt-12 p-8 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[3rem] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
-                <div class="flex items-center gap-8">
-                    <i class="fa-solid fa-umbrella text-4xl animate-bounce"></i>
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        
+        <div class="xl:col-span-2 relative group rounded-[3rem] overflow-hidden bg-black border-4 border-slate-900 shadow-2xl">
+            <img src="assets/Milky Way" 
+                 class="w-full h-[500px] object-cover opacity-80 brightness-75 transition-all duration-700 group-hover:scale-105"
+                 alt="Deep Sky Object">
+            
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="w-64 h-64 border border-white/20 rounded-full flex items-center justify-center">
+                    <div class="w-full h-[1px] bg-white/20 absolute"></div>
+                    <div class="w-[1px] h-full bg-white/20 absolute"></div>
+                    <div class="w-4 h-4 border-2 border-emerald-500 rounded-full shadow-[0_0_15px_#10b981]"></div>
+                </div>
+            </div>
+
+            <div class="absolute top-8 left-8 space-y-2 font-mono text-emerald-400 text-[10px]">
+                <p>REC: <span class="animate-pulse text-rose-500">● LIVE</span></p>
+                <p>ISO: 3200 | EXP: 30s</p>
+                <p>TEMP: -15°C (CCD)</p>
+            </div>
+
+            <div class="absolute bottom-0 inset-x-0 p-8 bg-gradient-to-t from-black to-transparent">
+                <div class="flex justify-between items-end">
                     <div>
-                        <h5 class="text-2xl font-black uppercase tracking-tighter italic">Clear Skies Guarantee</h5>
-                        <p class="text-indigo-100/80">If cloud cover exceeds 40%, we provide instant credit for future stays.</p>
+                        <p class="text-indigo-400 text-[10px] font-black uppercase tracking-widest">Active Target</p>
+                        <h4 class="text-white text-2xl font-black uppercase" x-text="scope.target"></h4>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-white font-mono text-xs">RA: <span x-text="scope.ra"></span></p>
+                        <p class="text-white font-mono text-xs">DEC: <span x-text="scope.dec"></span></p>
                     </div>
                 </div>
-                <button class="px-10 py-4 bg-white text-indigo-600 font-black uppercase text-xs tracking-widest rounded-2xl hover:scale-105 transition-transform">
-                    Learn More
-                </button>
             </div>
+        </div>
+
+        <div class="space-y-6">
+            
+            <div class="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border dark:border-slate-800">
+                <h4 class="font-black uppercase tracking-tighter text-xl mb-6">Targeting</h4>
+                <div class="space-y-4">
+                    <button class="w-full py-4 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center gap-4 px-6 hover:ring-2 ring-indigo-500 transition-all">
+                        <i class="fa-solid fa-earth-americas text-indigo-500"></i>
+                        <div class="text-left">
+                            <p class="text-[10px] font-black text-slate-400 uppercase">Preset 01</p>
+                            <p class="text-xs font-bold uppercase">Solar System</p>
+                        </div>
+                    </button>
+                    <button class="w-full py-4 bg-indigo-600 text-white rounded-2xl flex items-center gap-4 px-6 shadow-lg shadow-indigo-600/30">
+                        <i class="fa-solid fa-burst"></i>
+                        <div class="text-left">
+                            <p class="text-[10px] font-black text-indigo-200 uppercase">Preset 02</p>
+                            <p class="text-xs font-bold uppercase">Deep Sky Objects</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-8 bg-slate-900 rounded-[2.5rem] text-white">
+                <h4 class="font-black uppercase tracking-tighter text-xl mb-6 text-center text-indigo-400">Mount Control</h4>
+                <div class="grid grid-cols-3 gap-2 max-w-[150px] mx-auto">
+                    <div></div>
+                    <button class="aspect-square bg-slate-800 rounded-xl flex items-center justify-center hover:bg-indigo-600 active:scale-90 transition-all">
+                        <i class="fa-solid fa-caret-up"></i>
+                    </button>
+                    <div></div>
+                    <button class="aspect-square bg-slate-800 rounded-xl flex items-center justify-center hover:bg-indigo-600 active:scale-90 transition-all">
+                        <i class="fa-solid fa-caret-left"></i>
+                    </button>
+                    <div class="aspect-square bg-indigo-500/20 rounded-xl flex items-center justify-center text-indigo-500 text-[10px] font-black uppercase">Slow</div>
+                    <button class="aspect-square bg-slate-800 rounded-xl flex items-center justify-center hover:bg-indigo-600 active:scale-90 transition-all">
+                        <i class="fa-solid fa-caret-right"></i>
+                    </button>
+                    <div></div>
+                    <button class="aspect-square bg-slate-800 rounded-xl flex items-center justify-center hover:bg-indigo-600 active:scale-90 transition-all">
+                        <i class="fa-solid fa-caret-down"></i>
+                    </button>
+                    <div></div>
+                </div>
+            </div>
+
+            <div class="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border dark:border-slate-800">
+                <div class="flex justify-between mb-4">
+                    <span class="text-[10px] font-black uppercase text-slate-400">Magnification</span>
+                    <span class="text-[10px] font-black uppercase text-indigo-600" x-text="scope.zoom + 'x'"></span>
+                </div>
+                <input type="range" min="1" max="100" x-model="scope.zoom" class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full appearance-none cursor-pointer accent-indigo-600">
+            </div>
+
+        </div>
+    </div>
+</div>
+<div x-show="activeTab === 'gallery'" x-transition:enter class="space-y-8">
+    
+    <div class="flex flex-col xl:flex-row xl:items-end justify-between gap-6">
+        <div>
+            <h2 class="text-xs font-black text-purple-500 uppercase tracking-[0.4em] mb-2">Public Archives</h2>
+            <h3 class="text-4xl md:text-5xl font-black uppercase tracking-tighter">Celestial<span class="text-indigo-600">Gallery</span></h3>
+        </div>
+        
+        <div class="flex items-center gap-2 p-1.5 bg-white dark:bg-slate-900 rounded-2xl border dark:border-slate-800 shadow-sm overflow-x-auto no-scrollbar">
+            <button class="px-6 py-2 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg">All Captures</button>
+            <button class="px-6 py-2 text-slate-400 hover:text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all">Nebulae</button>
+            <button class="px-6 py-2 text-slate-400 hover:text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all">Galaxies</button>
+            <button class="px-6 py-2 text-slate-400 hover:text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all">Planetary</button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <template x-for="item in gallery" :key="item.id">
+            <div class="group relative bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border dark:border-slate-800 hover:border-indigo-500 shadow-sm hover:shadow-2xl transition-all duration-500">
+                
+                <div class="relative h-64 overflow-hidden">
+                    <img :src="item.img" :alt="item.title" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                        <div class="flex justify-between items-center text-white">
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-indigo-400 tracking-widest" x-text="item.category"></p>
+                                <p class="text-xs font-bold" x-text="'Shot on: ' + item.scope"></p>
+                            </div>
+                            <button class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center hover:bg-white hover:text-indigo-600 transition-all">
+                                <i class="fa-solid fa-download text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-black uppercase tracking-tighter" x-text="item.title"></h4>
+                        <span class="text-[10px] font-black text-indigo-600 uppercase" x-text="item.date"></span>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium">Stellaris Observatory • Sector 7G</p>
+                </div>
+
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-[2.5rem] opacity-0 group-hover:opacity-10 -z-10 transition-opacity"></div>
+            </div>
+        </template>
+    </div>
+
+    <div class="p-12 bg-slate-900 rounded-[3.5rem] relative overflow-hidden text-center">
+        <div class="relative z-10 space-y-4">
+            <h4 class="text-3xl font-black text-white uppercase tracking-tighter">Own a piece of the cosmos</h4>
+            <p class="text-slate-400 max-w-lg mx-auto text-sm">Purchase high-resolution physical prints of your own astronomical observations on brushed aluminum or acrylic glass.</p>
+            <button class="mt-4 px-10 py-4 bg-indigo-600 text-white font-black uppercase text-[10px] tracking-[0.3em] rounded-2xl hover:bg-white hover:text-indigo-900 transition-all shadow-xl shadow-indigo-600/20">
+                Save Your Memories
+            </button>
+        </div>
+        <div class="absolute top-0 left-0 w-64 h-64 bg-indigo-600/20 blur-[100px]"></div>
+        <div class="absolute bottom-0 right-0 w-64 h-64 bg-purple-600/20 blur-[100px]"></div>
+    </div>
+</div>
+
         </main>
     </div>
 
     <script>
+        
+        
         function setup() {
             return {
-                activeTab: 'home',
+                activeTab: 'dashboard',
                 sidebarOpen: false,
-                // Load from localStorage or default to false
+                // Unified Dark Mode State
                 darkMode: localStorage.getItem('darkMode') === 'true',
                 isRtl: localStorage.getItem('isRtl') === 'true',
                 
+                // Master Tab Configuration
                 tabs: [
-                    { id: 'home', name: 'Commander Home', icon: 'fa-solid fa-gauge-high' },
-                    { id: 'bookings', name: 'Reserve Pod', icon: 'fa-solid fa-house-night' },
-                    { id: 'telescope', name: 'Scope Access', icon: 'fa-solid fa-telescope' },
-                    { id: 'alerts', name: 'Cloud Alerts', icon: 'fa-solid fa-satellite' }
+                    { id: 'dashboard', name: 'Observatory', icon: 'fa-solid fa-gauge-high' },
+                    { id: 'reserve', name: 'Reserve Pod', icon: 'fa-solid fa-shuttle-space' },
+                    { id: 'scope', name: 'Scope Access', icon: 'fa-solid fa-telescope' },
+                    { id: 'gallery', name: 'Celestial Gallery', icon: 'fa-solid fa-images' }
+                   
                 ],
                 
                 stats: [
                     { label: 'Cloud Density', value: '12%', percent: 12, icon: 'fa-solid fa-cloud' },
                     { label: 'Air Transparency', value: '94%', percent: 94, icon: 'fa-solid fa-wind' },
-                    { label: 'Lunar Phase', value: 'Waning', percent: 15, icon: 'fa-solid fa-moon' }
+                    { label: 'Lunar Phase', value: '15%', percent: 15, icon: 'fa-solid fa-moon' }
                 ],
 
                 toggleDarkMode() {
                     this.darkMode = !this.darkMode;
                     localStorage.setItem('darkMode', this.darkMode);
-                    // This manually syncs the class just in case Alpine hasn't finished rendering
-                    if (this.darkMode) {
-                        document.documentElement.classList.add('dark');
-                    } else {
-                        document.documentElement.classList.remove('dark');
-                    }
+                    document.documentElement.classList.toggle('dark', this.darkMode);
                 },
 
                 toggleRtl() {
                     this.isRtl = !this.isRtl;
                     localStorage.setItem('isRtl', this.isRtl);
                 },
+                toggleDarkMode() {
+    this.darkMode = !this.darkMode;
+    // Save to localStorage as a string 'true'/'false'
+    localStorage.setItem('darkMode', this.darkMode);
+    
+    if (this.darkMode) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+},
+
+toggleRtl() {
+    this.isRtl = !this.isRtl;
+    localStorage.setItem('isRtl', this.isRtl);
+    
+    // Crucial: Update the actual 'dir' attribute so Tailwind 'rtl:' classes work
+    const direction = this.isRtl ? 'rtl' : 'ltr';
+    document.documentElement.setAttribute('dir', direction);
+},
 
                 logout() {
-                    if(confirm('Ready to sign out of Stellaris Command?')) {
-                        alert('Cleaning session...');
+                    if(confirm('Terminate Stellaris Session?')) {
+                        window.location.href = 'login.html';
                     }
                 }
             }
         }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('clarityChart').getContext('2d');
+    
+    // Gradient for the area chart
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, 'rgba(79, 70, 229, 0.4)');
+    gradient.addColorStop(1, 'rgba(79, 70, 229, 0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['20:00', '22:00', '00:00', '02:00', '04:00', '06:00'],
+            datasets: [{
+                label: 'Clarity %',
+                data: [95, 98, 85, 92, 99, 90],
+                borderColor: '#4f46e5',
+                borderWidth: 4,
+                pointBackgroundColor: '#4f46e5',
+                pointHoverRadius: 8,
+                fill: true,
+                backgroundColor: gradient,
+                tension: 0.4 // Makes the lines smooth
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { display: false, beginAtZero: true },
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        color: '#94a3b8',
+                        font: { weight: 'bold', size: 10 }
+                    }
+                }
+            }
+        }
+    });
+});
     </script>
+    
+<script>
+    // Form Toggle Logic
+    function toggleForm() {
+        const login = document.getElementById('login-form');
+        const signup = document.getElementById('signup-form');
+        login.classList.toggle('hidden');
+        signup.classList.toggle('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const root = document.documentElement;
+
+        // --- 1. THEME LOGIC ---
+        const updateTheme = (isDark) => {
+            root.classList.toggle('dark', isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            const icons = document.querySelectorAll('.theme-icon');
+            icons.forEach(icon => {
+                if (isDark) {
+                    icon.classList.replace('fa-moon', 'fa-sun');
+                } else {
+                    icon.classList.replace('fa-sun', 'fa-moon');
+                }
+            });
+        };
+
+        const savedTheme = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        updateTheme(savedTheme === 'dark' || (!savedTheme && systemDark));
+
+        document.querySelectorAll('.theme-toggle').forEach(btn => {
+            btn.onclick = () => updateTheme(!root.classList.contains('dark'));
+        });
+
+        // --- 2. DIRECTION LOGIC ---
+        const updateDirection = (dir) => {
+            root.setAttribute('dir', dir);
+            localStorage.setItem('dir', dir);
+            document.querySelectorAll('.dir-toggle').forEach(btn => {
+                btn.innerText = dir.toUpperCase();
+            });
+        };
+
+        const savedDir = localStorage.getItem('dir') || 'ltr';
+        updateDirection(savedDir);
+
+        document.querySelectorAll('.dir-toggle').forEach(btn => {
+            btn.onclick = () => {
+                const newDir = root.getAttribute('dir') === 'rtl' ? 'ltr' : 'rtl';
+                updateDirection(newDir);
+            }
+        });
+    });
+</script>
 </body>
 </html>
