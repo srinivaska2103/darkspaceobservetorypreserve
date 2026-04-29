@@ -79,21 +79,50 @@
                             <label class="block text-sm font-bold mb-2">Email Address</label>
                             <input type="email" placeholder="name@stellaris.com" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                         </div>
-                        <div>
-                             <label class="text-sm font-bold text-slate-700 dark:text-slate-200 leading-none">
+                        <div class="space-y-3">
+    <label class="text-sm font-bold text-slate-700 dark:text-slate-200 leading-none">
         Password
     </label>
-                            <input type="password" placeholder="••••••••" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                            <div class="flex items-end justify-between mb-2">
-  
-    
-   <div class="flex items-end w-full mb-2">
-    <a href="#" class="ml-auto text-[11px] md:text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline transition-all">
-        Forgot Password?
-    </a>
+
+    <div class="relative group">
+        <input type="password" id="password-field" placeholder="••••••••" 
+               class="w-full p-4 pr-12 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+        
+        <button type="button" onclick="togglePassword()" 
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-500 transition-colors focus:outline-none">
+            <i id="eye-icon" class="fa-solid fa-eye text-sm"></i>
+        </button>
+    </div>
+
+    <div class="flex items-center justify-between px-1">
+        <label class="flex items-center gap-2 cursor-pointer group/check">
+            <div class="relative flex items-center justify-center">
+                <input type="checkbox" class="peer appearance-none w-4 h-4 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 checked:bg-indigo-600 checked:border-indigo-600 transition-all">
+                <i class="fa-solid fa-check absolute text-[10px] text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></i>
+            </div>
+            <span class="text-[11px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 group-hover/check:text-indigo-600 transition-colors">Remember me</span>
+        </label>
+
+        <a href="#" class="text-[11px] md:text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline transition-all">
+            Forgot Password?
+        </a>
+    </div>
 </div>
-</div>
-                        </div>
+
+<script>
+    function togglePassword() {
+        const passwordField = document.getElementById('password-field');
+        const eyeIcon = document.getElementById('eye-icon');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+</script>
                         <button class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-xl shadow-indigo-600/20 transition-all active:scale-95">
                             Enter Observatory
                         </button>
